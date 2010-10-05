@@ -1,0 +1,56 @@
+-- -*- mode: Haskell;-*- 
+-- Filename:    http.cf 
+-- Authors:     lgm                                                    
+-- Creation:    Sun Mar  7 00:13:11 2010 
+-- Copyright:   Not supplied 
+-- Description: 
+-- ------------------------------------------------------------------------
+
+# line endings
+token CRLF "\r\n"
+ 
+# character types
+token CTL (cntrl | 127)
+token Safe ("$" | "-" | "_" | ".")
+token Extra ("!" | "*" | "'" | "(" | ")" | ",")
+token Reserved (";" | "/" | "?" | ":" | "@" | "&" | "=" | "+")
+token SortaSafe ("\"" | "<" | ">")
+token Unsafe (CTL | " " | "#" | "%" | SortaSafe)
+token National any - (alpha | digit | Reserved | Extra | Safe | Unsafe)
+token Unreserved (alpha | digit | Safe | Extra | National)
+token Escape ("%" xdigit xdigit)
+token Uchar (Unreserved | Escape | SortaSafe)
+token Pchar (Uchar | ":" | "@" | "&" | "=" | "+")
+token Tspecials ("(" | ")" | "<" | ">" | "@" | "," | ";" | ":" | "\\" | "\"" | "/" | "[" | "]" | "?" | "=" | "{" | "}" | " " | "\t")
+ 
+# elements
+token HTTPToken (ascii - (CTL | Tspecials))
+ 
+# URI Schemes and absolute paths
+  Scheme = ( alpha | digit | "+" | "-" | "." )* ;
+  AbsoluteURI = (Scheme ":" (Uchar | Reserved )*);
+ 
+  Path = ( Pchar+ ( "/" Pchar* )* ) ;
+  Query = ( Uchar | Reserved )* %QueryString ;
+  Param = ( Pchar | "/" )* ;
+  Params = ( Param ( ";" Param )* ) ;
+  RelPath = ( Path? %RequestPath (";" Params)? ) ("?" %start-query Query)?;
+  AbsolutePath = ( "/"+ RelPath );
+ 
+  RequestURI = ( "*" | AbsoluteURI | AbsolutePath ) >mark %RequestURI;
+  Fragment = ( Uchar | Reserved )* >mark %Fragment;
+  Method = ( upper | digit | Safe ){1,20} >mark %RequestMethod;
+ 
+  HTTPNumber = ( digit+ "." digit+ ) ;
+  HTTPVersion = ( "HTTP/" HTTPNumber ) >mark %HTTPVersion ;
+  Request-Line = ( Method " " RequestURI ("#" Fragment){0,1} " " HTTPVersion CRLF ) ;
+ 
+  FieldName = ( HTTPToken - ":" )+ >start-field $snake-upcase-field %write-field;
+ 
+  FieldValue = any* >start-value %write-value;
+ 
+  MessageHeader = FieldName ":" " "* FieldValue :> CRLF;
+ 
+  Request = Request-Line ( MessageHeader )* ( CRLF @done );
+ 
+main := Request;
