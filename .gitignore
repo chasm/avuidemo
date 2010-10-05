@@ -1,6 +1,7 @@
 *.[oa]
 *~
 target/
-db/cm/*
+db/cm/*.jdb
+db/cm/je*
 .DS_Store
 **/.DS_Store
