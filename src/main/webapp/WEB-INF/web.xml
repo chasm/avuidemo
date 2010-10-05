@@ -5,20 +5,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
                              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-  <filter>
-    <filter-name>Circumflex Core Filter</filter-name>
-    <filter-class>ru.circumflex.core.CircumflexFilter</filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>Circumflex Core Filter</filter-name>
-    <url-pattern>/login/*</url-pattern>
-    <dispatcher>REQUEST</dispatcher>
-    <dispatcher>FORWARD</dispatcher>
-    <dispatcher>INCLUDE</dispatcher>
-    <dispatcher>ERROR</dispatcher>
-  </filter-mapping>
-
 	<context-param>
 		<param-name>productionMode</param-name>
 		<param-value>false</param-value>
@@ -29,7 +15,6 @@
 	<servlet>
 		<servlet-name>Monit</servlet-name>
     <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
-    <!-- <servlet-class>org.vaadin.artur.icepush.ICEPushServlet</servlet-class> -->
 		<init-param>
 			<param-name>application</param-name>
 			<param-value>com.nonebetwixt.agent.ui.AgentServices</param-value>

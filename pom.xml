@@ -148,58 +148,22 @@
       <artifactId>commons-codec</artifactId>
       <version>1.4</version>
     </dependency>
-    <!-- HypergraphDB (Graph DB) -->
-    <!-- <dependency>
-      <groupId>org.hypergraphdb</groupId>
-      <artifactId>hypergraphdb</artifactId>
-      <version>1.0</version>
-    </dependency> -->
-    <!-- Berkeley DB (for HypergraphDB) -->
-    <!-- <dependency>
-      <groupId>com.sleepycat</groupId>
-      <artifactId>db</artifactId>
-      <version>1.0</version>
-    </dependency> -->
-    <!-- Berkeley DB for Java -->
     <dependency>
       <groupId>com.sleepycat</groupId>
       <artifactId>je</artifactId>
       <version>4.0.103</version>
     </dependency>
-    <!-- BaseX (XML DB) -->
-    <dependency>
-      <groupId>org.basex</groupId>
-      <artifactId>basex</artifactId>
-      <version>6.2.4</version>
-    </dependency>
-    <!-- BaseX API -->
-    <dependency>
-      <groupId>org.basex</groupId>
-      <artifactId>basex-api</artifactId>
-      <version>6.2.4</version>
-    </dependency> 
     <!-- Joda Time -->
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>1.6</version>
     </dependency>
-    <!-- ICEPush for Vaadin -->
-    <!-- <dependency>
-      <groupId>org.vaadin.artur</groupId>
-      <artifactId>icepush</artifactId>
-      <version>O.1.2</version>
-    </dependency> -->
-    <!-- Scalaz -->
+    <!-- Maven Scala Plugin -->
     <dependency>
-      <groupId>com.googlecode.scalaz</groupId>
-      <artifactId>scalaz-core_${scala.version}</artifactId>
-      <version>5.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.scalaz</groupId>
-      <artifactId>scalaz-http_${scala.version}</artifactId>
-      <version>5.0</version>
+      <groupId>org.scala-tools</groupId>
+      <artifactId>maven-scala-plugin</artifactId>
+      <version>2.14.1</version>
     </dependency>
     
     <!-- Testing only -->

@@ -7,11 +7,6 @@ import javax.servlet.http.HttpSession
 
 import scala.collection.JavaConversions._
 
-import scalaz._
-import scalaz.concurrent._
-
-// import org.vaadin.artur.icepush._
-
 import com.vaadin._
 import com.vaadin.data.util.{BeanItem, BeanItemContainer, IndexedContainer}
 import com.vaadin.ui._

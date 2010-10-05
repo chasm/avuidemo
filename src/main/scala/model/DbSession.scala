@@ -20,7 +20,7 @@ object DbSession {
   }
   
   def getContentAccessor(): ContentAccessor =
-    new ContentAccessor(DbSession.getEntityStore(AgentServices.cmFile).getOrElse(null))
+    new ContentAccessor(getEntityStore(AgentServices.cmFile).getOrElse(null))
   
   def getEnv(dbFile: File): Option[Environment] = {
     env match {
