@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.nonebetwixt</groupId>
+  <artifactId>agent</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>Agent Services</name>
+
+  <properties>
+    <port>8181</port>
+    <cx.version>1.2</cx.version>
+    <cx.router>com.nonebetwixt.agent.Main</cx.router>
+    <scala.version>2.8.0</scala.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <scala-plugin-version>2.14-SNAPSHOT</scala-plugin-version>
+  </properties>
+
+  <dependencies>
+    <!-- Scala! -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala.version}</version>
+    </dependency>
+    <!-- Circumflex Core (Web Framework) -->
+    <dependency>
+      <groupId>ru.circumflex</groupId>
+      <artifactId>circumflex-core</artifactId>
+      <version>${cx.version}</version>
+    </dependency>
+    <!-- Circumflex FreeMarker (Templating) -->
+    <dependency>
+      <groupId>ru.circumflex</groupId>
+      <artifactId>circumflex-ftl</artifactId>
+      <version>${cx.version}</version>
+    </dependency>
+    <!-- Javax Servlet 2.5 (HTTP) -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Javax persistence -->
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <!-- Logging -->
+    <!-- <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback-version}</version>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency> -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>1.5.11</version>
+    </dependency>
+    <!-- Parsing -->
+    <dependency>
+    	<groupId>jlex</groupId>
+    	<artifactId>JLex-local</artifactId>
+    	<version>local</version>
+    </dependency>
+    <dependency>
+      <groupId>cup</groupId>
+      <artifactId>java-cup-11a</artifactId>
+      <version>local</version>
+    </dependency>
+    <dependency>
+      <groupId>cup</groupId>
+      <artifactId>java-cup-11a-runtime</artifactId>
+      <version>local</version>
+    </dependency>
+    <!-- Weird shit for Greg -->
+    <dependency>
+      <groupId>com.rabbitmq</groupId>
+      <artifactId>rabbitmq-client</artifactId>
+      <version>1.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+      <version>1.1</version>
+    </dependency> 
+    <dependency>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3_min</artifactId>
+      <version>1.1.4c</version>
+    </dependency> 
+    <dependency>
+      <groupId>xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.3.1</version>
+    </dependency> 
+    <dependency>
+      <groupId>com.eaio.eaio</groupId>
+      <artifactId>uuid</artifactId>
+      <version>3.1</version>
+    </dependency>
+    <!-- Squeryl ORM -->
+    <dependency>
+      <groupId>org.squeryl</groupId>
+      <artifactId>squeryl_2.8.0</artifactId>
+      <version>0.9.4beta8</version>
+    </dependency>
+    <!-- Mail -->
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.1</version>
+    </dependency>
+    <!-- PostgreSQL driver (RDBMS) -->
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>8.3-603.jdbc4</version>
+    </dependency>
+    <!-- Vaadin (RIA UI) -->
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin</artifactId>
+      <version>6.4.5</version>
+    </dependency>
+    <!-- General utilities -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <!-- SHA -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <!-- HypergraphDB (Graph DB) -->
+    <!-- <dependency>
+      <groupId>org.hypergraphdb</groupId>
+      <artifactId>hypergraphdb</artifactId>
+      <version>1.0</version>
+    </dependency> -->
+    <!-- Berkeley DB (for HypergraphDB) -->
+    <!-- <dependency>
+      <groupId>com.sleepycat</groupId>
+      <artifactId>db</artifactId>
+      <version>1.0</version>
+    </dependency> -->
+    <!-- Berkeley DB for Java -->
+    <dependency>
+      <groupId>com.sleepycat</groupId>
+      <artifactId>je</artifactId>
+      <version>4.0.103</version>
+    </dependency>
+    <!-- BaseX (XML DB) -->
+    <dependency>
+      <groupId>org.basex</groupId>
+      <artifactId>basex</artifactId>
+      <version>6.2.4</version>
+    </dependency>
+    <!-- BaseX API -->
+    <dependency>
+      <groupId>org.basex</groupId>
+      <artifactId>basex-api</artifactId>
+      <version>6.2.4</version>
+    </dependency> 
+    <!-- Joda Time -->
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.6</version>
+    </dependency>
+    <!-- ICEPush for Vaadin -->
+    <!-- <dependency>
+      <groupId>org.vaadin.artur</groupId>
+      <artifactId>icepush</artifactId>
+      <version>O.1.2</version>
+    </dependency> -->
+    <!-- Scalaz -->
+    <dependency>
+      <groupId>com.googlecode.scalaz</groupId>
+      <artifactId>scalaz-core_${scala.version}</artifactId>
+      <version>5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.scalaz</groupId>
+      <artifactId>scalaz-http_${scala.version}</artifactId>
+      <version>5.0</version>
+    </dependency>
+    
+    <!-- Testing only -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.2.121</version>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>repo1.maven</id>
+      <name>Maven Central Repo</name>
+      <url>http://repo1.maven.org/maven2/</url>
+    </repository>
+    
+    <repository>
+      <id>oracleReleases</id>
+      <name>Oracle Released Java Packages</name>
+      <url>http://download.oracle.com/maven</url>
+      <layout>default</layout>
+    </repository>
+    
+    <repository>
+      <id>fusesource.m2</id>
+      <name>FuseSource Community Release Repository</name>
+      <url>http://repo.fusesource.com/nexus/content/repositories/public</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    
+    <repository>
+      <id>fusesource.m2-snapshot</id>
+      <name>FuseSource Community Snapshot Repository</name>
+      <url>http://repo.fusesource.com/nexus/content/repositories/snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+
+    <repository>
+      <id>java.net.m2</id>
+      <name>java.net Maven 2 Repo</name>
+      <url>http://download.java.net/maven/2</url>
+    </repository>
+    
+    <repository>
+      <id>openqa-releases</id>
+      <name>OpenQA Releases</name>
+      <url>http://archiva.openqa.org/repository/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>glassfish-repo-archive</id>
+      <name>Nexus repository collection for Glassfish</name>
+      <url>http://maven.glassfish.org/content/groups/glassfish</url>
+      <snapshots>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>scala</id>
+      <name>Scala Tools</name>
+      <url>http://scala-tools.org/repo-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    
+    <repository>
+      <id>snapshots.scala-tools.org</id>
+      <name>Scala-Tools Maven2 Snapshot Repository</name>
+      <url>http://scala-tools.org/repo-snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <!--updatePolicy>never</updatePolicy-->
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+        <!--updatePolicy>never</updatePolicy-->
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+    </repository>
+    
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Development Snapshot Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>repository.codehaus.org</id>
+      <name>Codehaus</name>
+      <url>http://repository.codehaus.org/com/thoughtworks</url>
+    </repository>
+    
+    <repository>
+      <id>mojo.codehaus.org</id>
+      <name>Codehaus-Mojo</name>
+      <url>http://repository.codehaus.org/org/codehaus/mojo</url>
+    </repository>
+    
+    <repository>
+      <id>org.apache.logging</id>
+      <url>http://archive.apache.org/dist/logging/log4j</url>
+    </repository>
+    
+    <!-- <repository>
+      <id>squeryl</id>
+      <url>http://nexus.scala-tools.org</url>
+    </repository> -->
+    
+    <repository>
+      <id>biosim</id>
+      <url>http://biosimrepomirror.googlecode.com/svn/trunk</url>
+    </repository>
+    
+    <repository>
+     <id>stax-releases</id>
+     <url>http://mvn.stax.net/content/repositories/releases</url>
+     <snapshots>
+       <enabled>false</enabled>
+     </snapshots>
+   </repository>
+   
+   <repository>
+     <id>stax-snapshots</id>
+     <url>http://mvn.stax.net/content/repositories/snapshots</url>
+     <releases>
+       <enabled>false</enabled>
+     </releases>
+   </repository>
+   
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>scala-tools.org</id>
+      <name>Scala-Tools Maven2 Repository</name>
+      <url>http://scala-tools.org/repo-snapshots</url>
+      <snapshots />
+    </pluginRepository>
+    <pluginRepository>
+      <id>stax-plugins-releases</id>
+      <url>http://mvn.stax.net/content/repositories/releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>stax-plugins-snapshots</id>
+      <url>http://mvn.stax.net/content/repositories/snapshots</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>    
+  </pluginRepositories>
+
+  <build>
+    <sourceDirectory>src/main/scala</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.scala-tools</groupId>
+        <artifactId>maven-scala-plugin</artifactId>
+        <version>${scala-plugin-version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <scalaVersion>${scala.version}</scalaVersion>
+          <jvmArgs>
+            <jvmArg>-Xmx1024m</jvmArg>
+          </jvmArgs>
+          <args>
+            <!-- <arg>-P:continuations:enable</arg> -->
+            <!-- <arg>-unchecked</arg> -->
+            <!-- <arg>-deprecation</arg> -->
+            <!-- <arg>-make:transitivenocp</arg> -->
+            <!-- <arg>-dependencyfile</arg> -->
+            <!-- <arg>${project.build.directory}/.scala_dependencies</arg> -->
+          </args>
+      	  <compilerPlugins>
+      	    <compilerPlugin>	      
+      	      <groupId>org.scala-lang.plugins</groupId>
+      	      <artifactId>continuations</artifactId>
+      	      <version>${scala.version}</version>
+      	    </compilerPlugin>
+      	  </compilerPlugins>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/main/scala</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.19</version>
+        <configuration>
+          <scanIntervalSeconds>5</scanIntervalSeconds>
+          <contextPath>/</contextPath>
+          <connectors>
+            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+              <port>${port}</port>
+              <maxIdleTime>60000</maxIdleTime>
+            </connector>
+          </connectors>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>ru.circumflex</groupId>
+        <artifactId>maven-cx-plugin</artifactId>
+        <version>${cx.version}</version>
+        <executions>
+          <execution>
+            <id>configure</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>cfg</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

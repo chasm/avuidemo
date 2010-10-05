@@ -1,0 +1,471 @@
+@import "../chameleon/styles.css";
+
+/** 
+ * "optional-" prefix means that the style is not necessarily used, it can be left blank
+ * "generated-" prefix means that the style is calculated from some other color, and not directly selected by the editor user
+ *
+ **/
+
+/* Application background */
+.v-app {
+/*  background: rgb(255,255,255);*/
+    background: rgb(204,202,177);
+	}
+
+.v-window,
+.v-popupview-popup,
+.v-filterselect-suggestpopup,
+.v-datefield-popup,
+.v-contextmenu,
+.v-Notification,
+.v-menubar-submenu {
+	background-color: rgb(255,255,255);
+	background-color: rgba(255,255,255,.85);
+	}
+
+body.v-ie6 .v-window,
+body.v-ie7 .v-window,
+body.v-ie6 .v-popupview-popup,
+body.v-ie7 .v-popupview-popup,
+body.v-ie6 .v-filterselect-suggestpopup,
+body.v-ie7 .v-filterselect-suggestpopup,
+body.v-ie6 .v-datefield-popup,
+body.v-ie7 .v-datefield-popup,
+body.v-ie6 .v-contextmenu,
+body.v-ie7 .v-contextmenu,
+body.v-ie6 .v-menubar-submenu,
+body.v-ie7 .v-menubar-submenu,
+.v-panel-content,
+.v-panel-bubble .v-panel-captionwrap,
+.v-panel-bubble .v-panel-deco-bubble,
+.v-tabsheet-content,
+.v-tabsheet-tabitem-selected,
+.v-slider-base,
+.v-window-modalitycurtain,
+.v-window-opaque,
+.v-progressindicator-wrapper,
+.v-accordion-item-caption,
+.v-accordion-item-open .v-accordion-item-caption:active,
+.v-accordion-opaque div.v-accordion-item-open,
+.v-table-scrollposition,
+.v-table-body {
+	background-color: rgb(255,255,255);
+	}
+
+/* Base font size and color */
+.v-app,
+.v-window,
+.v-popupview-popup,
+.v-app input,
+.v-app button,
+.v-app textarea,
+.v-window input,
+.v-window button,
+.v-window textarea,
+.v-popupview-popup input,
+.v-popupview-popup button,
+.v-popupview-popup textarea,
+.v-filterselect-suggestpopup,
+.v-datefield-popup,
+.v-datefield-calendarpanel-header button,
+.v-contextmenu,
+.v-Notification,
+.v-menubar-submenu,
+.v-table-header-drag,
+.v-filterselect-select-button .v-filterselect-input,
+.v-drag-element {
+	font-size: 13px;
+	color: rgb(82,77,74);
+	}
+
+.v-app select,
+.v-window select,
+.v-popupview-popup select,
+.v-datefield-popup select {
+	font-size: 13px;
+	}
+
+.v-label,
+.sidebar-menu .v-label,
+.v-table-scrollposition {
+	@optional-generated-shadow@
+	}
+
+/* Base background color */
+.v-button:active,
+.v-ie .v-button.v-pressed,
+div.v-button-down,
+.v-slider .v-slider-handle-active {
+	background-color: rgb(163,162,142);
+	border-color: rgb(104,104,91);
+	}
+
+div.v-button-down:active {
+	background-color: rgb(130,130,114);
+	}
+	
+.v-button:focus {
+	background-color: rgb(163,162,142);
+	}
+
+/* Base border color */
+.v-button:active .v-button-wrap,
+.v-ie .v-button.v-pressed .v-button-wrap,
+.v-button-down .v-button-wrap,
+.v-datefield-calendarpanel-header td,
+.v-slider-base,
+.v-tabsheet-scrollerNext,
+.v-tabsheet-scrollerNext-disabled,
+.v-tabsheet-scrollerNext-disabled:active,
+.v-table-header-wrap,
+.v-table-body,
+.v-table-resizer,
+div.v-table-focus-slot-left,
+div.v-table-focus-slot-right,
+input.v-textfield,
+textarea.v-textarea,
+.v-filterselect {
+	border-color: rgb(130,130,114);
+	}
+
+
+input.v-textfield,
+textarea.v-textarea,
+.v-filterselect {
+	border-bottom-color: rgb(163,162,142);
+	border-left-color: rgb(163,162,142);
+	border-right-color: rgb(163,162,142);
+	}
+
+.v-button,
+.v-disabled.v-button:focus,
+.v-disabled.v-button:active,
+.v-datefield-button,
+.v-datefield-calendarpanel-header button,
+td.v-datefield-calendarpanel-month,
+.v-datefield-calendarpanel-weekdays strong,
+.v-slider-handle,
+.v-table-header-wrap,
+.v-table-header-drag,
+.v-filterselect-prevpage-off,
+.v-filterselect-nextpage-off,
+.v-filterselect-prevpage,
+.v-filterselect-nextpage,
+.v-filterselect-select-button,
+.v-splitpanel-hsplitter,
+.v-splitpanel-vsplitter,
+.v-splitpanel-hsplitter-locked,
+.v-splitpanel-vsplitter-locked,
+.v-accordion-opaque,
+.v-accordion-opaque .v-accordion-item-open,
+.v-accordion-opaque .v-accordion-item-caption,
+.v-accordion-opaque .v-accordion-item-open .v-accordion-item-caption:active,
+.v-tabsheet-scroller,
+.v-csslayout-toolbar,
+.v-menubar {
+	background-color: rgb(204,202,177);
+	border-color: rgb(130,130,114);
+	}
+
+.v-button .v-button-wrap,
+.v-disabled.v-button:focus .v-button-wrap,
+.v-disabled.v-button:active .v-button-wrap,
+.v-datefield-calendarpanel-header button,
+td.v-datefield-calendarpanel-month,
+.v-window-wrap,
+.v-popupview-popup,
+.v-filterselect-suggestpopup,
+.v-datefield-popup,
+.v-contextmenu,
+.v-menubar-submenu,
+.v-panel-bubble .v-panel-caption-bubble,
+.v-slider-handle,
+.v-tabsheet-tabitem-selected .v-caption,
+.v-table-header-wrap,
+.v-table-header-drag,
+.v-filterselect-prevpage-off,
+.v-filterselect-nextpage-off,
+.v-filterselect-prevpage,
+.v-filterselect-nextpage,
+.v-filterselect-select-button,
+.v-progressindicator-indicator,
+.v-accordion-item-caption,
+.v-accordion-item-open .v-accordion-item-caption:active,
+.v-tabsheet-scroller,
+.v-csslayout-toolbar,
+.v-menubar {
+	
+	}
+
+.v-datefield-calendarpanel-weekdays strong,
+.v-splitpanel-hsplitter-small,
+.v-splitpanel-vsplitter-small,
+.v-splitpanel-hsplitter-small-locked,
+.v-splitpanel-vsplitter-small-locked {
+	background-color: rgb(163,162,142);
+	}
+
+.v-progressindicator-wrapper {
+	border-color: rgb(163,162,142);
+	}
+
+.v-button,
+.v-disabled.v-button:focus,
+.v-disabled.v-button:active,
+.v-datefield-calendarpanel-header button,
+td.v-datefield-calendarpanel-month,
+.v-tabsheet-tabitem-selected .v-caption,
+.v-window-header,
+.v-table-caption-container,
+.v-accordion-item-caption,
+.v-menubar .v-menubar-menuitem,
+.v-filterselect-select-button .v-filterselect-input {
+	text-shadow: 0 1px 0 rgb(224,224,215);
+	}
+
+/* Background border color */
+.v-window,
+.v-popupview-popup,
+.v-filterselect-suggestpopup,
+.v-datefield-popup,
+.v-contextmenu,
+.v-Notification,
+.v-menubar-submenu,
+.v-panel-caption,
+.v-panel-nocaption,
+.v-panel-content,
+.v-panel-deco,
+.v-panel-light .v-panel-caption-light,
+.v-panel-bubble .v-panel-captionwrap,
+.v-panel-bubble .v-panel-content-bubble,
+.v-panel-bubble .v-panel-deco-bubble,
+.v-tabsheet-tabitem-selected,
+.v-tabsheet-tabitem,
+.v-tabsheet-spacertd div,
+.v-tabsheet-content,
+.v-tabsheet-deco,
+.v-slider,
+.v-splitpanel-hsplitter,
+.v-splitpanel-vsplitter,
+.v-splitpanel-hsplitter-locked,
+.v-splitpanel-vsplitter-locked,
+.v-table-scrollposition,
+.v-accordion,
+.v-accordion-item-caption,
+.v-accordion-item-open,
+.v-menubar-separator span {
+	border-color: rgb(204,204,204);
+	}
+
+/* Alternate colors */
+.v-label-color,
+.v-button-link,
+.v-button-link:focus,
+.v-button-link:active,
+.v-disabled.v-button-link,
+.v-disabled.v-button-link:focus,
+.v-app a,
+.v-popupview-popup a,
+.v-popupview,
+.sidebar-menu .v-label {
+	color: rgb(74,109,25);
+	}
+
+.v-button-default,
+.v-disabled.v-button-default,
+.v-disabled.v-button-default:focus,
+.v-button-default:active,
+.v-ie7 .v-button-default.v-pressed,
+.v-ie8 .v-button-default.v-pressed,
+.sidebar-menu .tab-selected,
+.sidebar-menu .selected,
+.v-horizontallayout-segment-alternate .v-button-down {
+	border-color: rgb(52,70,26);
+	}
+
+.v-button-default:focus,
+.v-horizontallayout-segment-alternate .v-button-down:active {
+	background-color: rgb(62,87,27);
+	}
+
+.v-button-default:active .v-button-wrap,
+.v-ie7 .v-button-default.v-pressed .v-button-wrap,
+.v-ie8 .v-button-default.v-pressed .v-button-wrap,
+.v-progressindicator-indicator,
+.v-datefield-calendarpanel-day:hover,
+.v-horizontallayout-segment-alternate .v-button-down .v-button-wrap {
+	border-color: rgb(62,87,27);
+	}
+
+.v-button-default,
+.v-disabled.v-button-default,
+.v-disabled.v-button-default:focus,
+.v-button-default:active,
+.v-ie7 .v-button-default.v-pressed,
+.v-ie8 .v-button-default.v-pressed,
+.v-panel-bubble .v-panel-caption,
+.v-datefield-calendarpanel-day-selected,
+.v-table tr.v-selected,
+.v-contextmenu .gwt-MenuItem-selected,
+.v-contextmenu .gwt-MenuItem-selected div,
+.v-filterselect-suggestpopup .gwt-MenuItem-selected,
+.v-progressindicator-indicator,
+.v-tree-node-selected span,
+.sidebar-menu .tab-selected,
+.sidebar-menu .selected,
+.v-horizontallayout-segment-alternate .v-button-down,
+.v-menubar .v-menubar-menuitem-selected,
+.v-menubar-submenu .v-menubar-menuitem-selected {
+	background-color: rgb(74,109,25);
+	color: rgb(235,236,235);
+	text-shadow: 0 -1px 0 rgb(52,70,26);
+	}
+
+.v-ie6 .v-progressindicator-indicator {
+	background-color: rgb(74,109,25);
+	}
+
+.v-panel-caption,
+.v-table-striped .v-table-row-odd,
+.sidebar-menu {
+	background: rgb(196,202,188);
+	}
+
+.sidebar-menu .tab-selected,
+.sidebar-menu .selected {
+	text-shadow: 0 1px 0 rgb(52,70,26);
+	}
+	
+/* Custom styles for Agent Services */
+
+.logo {
+  padding: 20px 10px 0;
+  color: rgb(235,236,235);
+  background: rgb(74,109,25);
+  -webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+
+.footer {
+  text-align: center;
+  padding: 10px;
+  color: rgb(235,236,235);
+  background: rgb(74,109,25);
+  -webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+
+.logo {
+  text-transform: lowercase;
+}
+
+.logo h1 {
+  font-weight: normal;
+}
+
+span#asterisk {
+  float: left;
+  display: block;
+  font-size: 64px;
+  margin: -8px 8px -25px 0;
+}
+
+.cpanel {
+  margin-bottom: 5px;
+}
+
+.v-tabsheet-content, .centerLayout {
+  -webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+
+.centerLayout {
+  background: rgb(235,236,235);
+}
+
+.v-tabsheet-tabitemcell-first .v-tabsheet-tabitem {
+  margin-left: 6px;
+}
+
+.footer  {
+  text-align: center;
+  cursor: default;
+}
+
+.footer .copyright {
+  color: rgb(255,255,255);
+}
+
+.testdata .v-button-caption {
+  text-decoration: none;
+  color: rgb(255,255,255);
+  cursor: default;
+}
+
+.logout {
+  float: right;
+  margin: -12px 0 0 0;
+}
+
+.logout .v-button-caption {
+  text-decoration: none;
+  color: rgb(255,255,255);
+}
+
+.logout .v-button-caption:hover {
+  text-decoration: none;
+  color: rgb(204,202,177);
+}
+
+span.tag_PA, span.tag_An, span.tag_Aq, span.tag_Fr, span.tag_CF,
+span.tag_BF, span.tag_Co, span.tag_As, span.tag_TC, span.tag_Mr,
+span.tag_Me, span.tag_EF, span.tag_IF, span.tag_CC, span.tag_Pr {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: bold;
+  text-align: center;
+  width: 18px;
+  height: 16px;
+  display: block;
+  float: left;
+  margin: 0 3px 0 0; 
+}
+
+div.tag_PA span, span.tag_PA { color: #000000; background: #eeeeee; }
+div.tag_An span, span.tag_An { color: #ffffff; background: #333333; }
+div.tag_Aq span, span.tag_Aq { color: #000000; background: #f9a5a3; }
+div.tag_Fr span, span.tag_Fr { color: #000000; background: #ee6666; }
+div.tag_CF span, span.tag_CF { color: #ffffff; background: #db2b2d; }
+div.tag_BF span, span.tag_BF { color: #ffffff; background: #b60c0c; }
+div.tag_Co span, span.tag_Co { color: #000000; background: #c1d8e6; }
+div.tag_As span, span.tag_As { color: #000000; background: #6f9ebc; }
+div.tag_TC span, span.tag_TC { color: #ffffff; background: #1d5b80; }
+div.tag_Mr span, span.tag_Mr { color: #ffffff; background: #9f36b7; }
+div.tag_Me span, span.tag_Me { color: #000000; background: #da74f3; }
+div.tag_EF span, span.tag_EF { color: #000000; background: #8ed3a6; }
+div.tag_IF span, span.tag_IF { color: #000000; background: #0f8a39; }
+div.tag_CC span, span.tag_CC { color: #000000; background: #dee072; }
+div.tag_Pr span, span.tag_Pr { color: #ffffff; background: #990000; }
+
+
+div.tag_PA span, div.tag_An span, div.tag_Aq span, div.tag_Fr span, div.tag_CF span,
+div.tag_BF span, div.tag_Co span, div.tag_As span, div.tag_TC span, div.tag_Mr span,
+div.tag_Me span, div.tag_EF span, div.tag_IF span, div.tag_CC span, div.tag_Pr {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: bold;
+  text-align: center;
+  width: 18px;
+  height: 16px;
+  display: block;
+  float: left;
+  margin: 0 3px 0 0; 
+}
+
+div.tag_PA, div.tag_An, div.tag_Aq, div.tag_Fr, div.tag_CF,
+div.tag_BF, div.tag_Co, div.tag_As, div.tag_TC, div.tag_Mr,
+div.tag_Me, div.tag_EF, div.tag_IF, div.tag_CC, div.tag_Pr {
+  float: left;
+  margin-right: 5px;
+}
+
