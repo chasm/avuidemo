@@ -100,13 +100,25 @@ class ContentItemDisplay(ctr: ContentTreeContainer) extends VerticalLayout with 
     
     val tagContainer = ContentTagContainer.load.getOrElse(new ContentTagContainer(List()))
     
+    // tags = new ListSelect()
+    // tags.setWidth("100%")
+    // tags.setRows(3)
+    // tags.setMultiSelect(true)
+    // tags.setNullSelectionAllowed(true)
+    // tags.setContainerDataSource(tagContainer)
+    // tags.setPropertyDataSource(ci.getItemProperty("tags"))
+    
     tags = new ListSelect()
     tags.setWidth("100%")
     tags.setRows(3)
     tags.setMultiSelect(true)
     tags.setNullSelectionAllowed(true)
-    tags.setContainerDataSource(tagContainer)
-    tags.setPropertyDataSource(ci.getItemProperty("tags"))
+    ContentTagDAO.getAll().map(ct => {
+      tags.addItem(ct.getName())
+    })
+    item.getItemProperty("tags").getValue().asInstanceOf[java.util.TreeSet[ContentTag]].toList.map(ct => {
+      tags.select(ct.getName())
+    })
     
     val header = new HorizontalLayout()
     header.setMargin(false)
@@ -161,14 +173,14 @@ class ContentItemDisplay(ctr: ContentTreeContainer) extends VerticalLayout with 
     header.setComponentAlignment(edit, Alignment.TOP_RIGHT)
     header.setExpandRatio(tags, 1.0f)
     
-    val value = new Label(item.getItemProperty("value"))
-    value.setWidth("100%")
-    value.setHeight("100%")
+    val value = new Label(item.getItemProperty("value"), Label.CONTENT_XHTML)
     
     val panel = new Panel(item.getItemProperty("name").getValue().asInstanceOf[String])
+    panel.setWidth("100%")
+    panel.setHeight("480px")
+    panel.setScrollable(true)
     panel.addComponent(header)
     panel.addComponent(value)
-    panel.setSizeFull()
     
     val layout = panel.getContent().asInstanceOf[VerticalLayout]
     layout.addStyleName("borderless")
@@ -182,6 +194,7 @@ class ContentItemDisplay(ctr: ContentTreeContainer) extends VerticalLayout with 
     event.getButton() match {
       case s if s == save => 
         val thisId = item.getItemProperty("id").getValue().asInstanceOf[String]
+        val newTags = tags.getValue().asInstanceOf[java.util.Set[String]].toList
         val thisItem = ContentItemDAO.get(thisId).map(x => {
           x.setUserId( item.getItemProperty("userId").getValue().asInstanceOf[String] )
           x.setParentId( item.getItemProperty("parentId").getValue().asInstanceOf[String] )
@@ -189,16 +202,18 @@ class ContentItemDisplay(ctr: ContentTreeContainer) extends VerticalLayout with 
           x.setValue( item.getItemProperty("value").getValue().asInstanceOf[String] )
           x.setVtype( item.getItemProperty("vtype").getValue().asInstanceOf[String] )
           
-          // ContentItemDAO.put(thisItem)
-          val itemTags = ItemTagDAO.getByItemId(x.getId())
-          println("Old Tags: ")
-          itemTags.map(it => println(it.getId() + ": " + it.getItemId() + " (" + it.getTagName + ")"))
-          val newTags = item.getItemProperty("tags").getValue().asInstanceOf[java.util.Set[ContentTag]].toList
-          println("New Tags: ")
-          newTags.map(it => println(it.getName() + ": " + it.getAbbr()))
-          println("Wait for it...")
-          tags.getValue().asInstanceOf[java.util.Set[ContentTag]].toList.map(t => println(t.getName()))
+          ContentItemDAO.put(x)
+          val id = x.getId()
+          ItemTagDAO.delete(ItemTagDAO.getByItemId(id))
+          ItemTagDAO.put(newTags.map(t => {
+            new ItemTag(id, t)
+          }))
+          
+          val newCTs = ContentTagDAO.getByNames(newTags)
+          x.setTags( newCTs )
+          item.getItemProperty("tags").setValue(x.getTags())
         })
+        loadViewer(item, id)
 
       case e if e == edit => {
         getWindow().showNotification("Item Click", "Edit button: " + event.toString, Notification.TYPE_TRAY_NOTIFICATION)

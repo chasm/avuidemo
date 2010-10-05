@@ -55,6 +55,10 @@ object ContentTagDAO {
     }
   }
   
+  def getByNames(names: List[String]): List[ContentTag] = {
+    names.flatMap(n => get(n))
+  }
+  
   def getAll(): List[ContentTag] = {
     DbSession.getContentAccessor().contentTagsByName.entities().toList
   }
