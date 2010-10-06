@@ -116,7 +116,7 @@
     <dependency>
       <groupId>org.squeryl</groupId>
       <artifactId>squeryl_2.8.0</artifactId>
-      <version>0.9.4beta8</version>
+      <version>0.9.4-RC2</version>
     </dependency>
     <!-- Mail -->
     <dependency>
@@ -296,10 +296,10 @@
       <url>http://archive.apache.org/dist/logging/log4j</url>
     </repository>
     
-    <!-- <repository>
+    <repository>
       <id>squeryl</id>
       <url>http://nexus.scala-tools.org</url>
-    </repository> -->
+    </repository>
     
     <repository>
       <id>biosim</id>
