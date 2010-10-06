@@ -332,6 +332,11 @@
       <snapshots />
     </pluginRepository>
     <pluginRepository>
+      <id>scala-tools.org</id>
+      <name>Scala-tools Maven2 Repository</name>
+      <url>http://scala-tools.org/repo-releases</url>
+    </pluginRepository>
+    <pluginRepository>
       <id>stax-plugins-releases</id>
       <url>http://mvn.stax.net/content/repositories/releases</url>
       <snapshots>
