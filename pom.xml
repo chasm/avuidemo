@@ -243,12 +243,12 @@
       <id>scala</id>
       <name>Scala Tools</name>
       <url>http://scala-tools.org/repo-releases/</url>
-      <releases>
+      <!-- <releases>
         <enabled>true</enabled>
       </releases>
       <snapshots>
         <enabled>false</enabled>
-      </snapshots>
+      </snapshots> -->
     </repository>
     
     <repository>
