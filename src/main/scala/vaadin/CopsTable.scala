@@ -37,6 +37,7 @@ object CopsTable {
 class CopsTable(tabsheet: TabSheet) extends VerticalLayout with ClickListener {
   setSizeFull()
   setMargin(true)
+  setSpacing(true)
 
   val table = new Table()
 
@@ -45,7 +46,7 @@ class CopsTable(tabsheet: TabSheet) extends VerticalLayout with ClickListener {
   table.addStyleName("striped")
 
   table.setWidth("100%")
-  table.setHeight("320px")
+  table.setHeight("360px")
 
   table.setSelectable(true)
   table.setMultiSelect(false)

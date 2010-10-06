@@ -92,6 +92,7 @@ object ContentItemDAO {
     val ca = DbSession.getContentAccessor()
     
     contentItems.map(ci => {
+      // println("Putting content item: " + ci.getName())
       ca.contentItemsById.put(ci)
     })
   }
