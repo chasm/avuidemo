@@ -19,6 +19,10 @@
 			<param-name>application</param-name>
 			<param-value>com.nonebetwixt.agent.ui.AgentServices</param-value>
 		</init-param>
+    <init-param>
+      <param-name>widgetset</param-name>
+      <param-value>com.nonebetwixt.agent.gwt.AgentWidgetSet</param-value>
+    </init-param>
 	</servlet>
 	
 	<servlet-mapping>

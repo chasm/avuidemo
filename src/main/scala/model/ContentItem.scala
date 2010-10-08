@@ -80,6 +80,10 @@ class ContentItem(ui: String, pi: String, n: String, v: String, vt: String, u: S
   def removeTag(t: ContentTag) = { this.tags -= t }
   def hasTags(): Boolean = this.tags.nonEmpty
   
+  def getTagsAsHTML(): String = this.tags.toList.map(t => {
+    "<span class=\"tag_" + t.getAbbr() + "\" title=\"" + t.getName() + "\">" + t.getAbbr() + "</span>"
+  }).mkString(" ")
+  
   
   override def toString(): String = this.name + ": " + this.value + " (" + this.vtype + ")"
 }

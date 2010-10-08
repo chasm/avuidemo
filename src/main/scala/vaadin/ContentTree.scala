@@ -1,69 +1,78 @@
-// package com.nonebetwixt.agent.ui
-// 
-// import com.vaadin.data.{Item, Property}
-// import com.vaadin.data.Property.ValueChangeEvent
-// import com.vaadin.event.Action
-// import com.vaadin.ui._
-// 
-// import scala.collection.JavaConversions._
-// 
-// class ContentTree extends HorizontalLayout with Action.Handler {
-// 
-//   // Actions for the context menu
-//   private val ACTION_ADD = new Action("Add child item")
-//   private val ACTION_DELETE = new Action("Delete")
-//   private val ACTIONS: Array[Action] = Array(ACTION_ADD, ACTION_DELETE)
-// 
-//   private val tree = new Tree("Managed Content")
-// 
-//   setSpacing(true)
-//   addComponent(tree)
-//   
-//   // HorizontalLayout editBar
-//   // private TextField editor
-//   // private Button change
-// 
-//   // tree.setContainerDataSource()
-// 
-//   tree.addActionHandler(this)
-//   tree.setImmediate(true)
-// 
-//   tree.setItemCaptionPropertyId("name")
-//   tree.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY)
-// 
-//   tree.rootItemIds().toList.map(id => {
-//     tree.expandItemsRecursively(id)
-//   })
-// 
-//   /*
-//    * Returns the set of available actions
-//    */
-//   def getActions(target: AnyRef, sender: AnyRef): Array[Action] = {
-//     ACTIONS
-//   }
-// 
-//   /*
-//    * Handle actions
-//    */
-//   def handleAction(action: Action, sender: AnyRef, target: AnyRef) {
-//     if (action == ACTION_ADD) {
-//       tree.setChildrenAllowed(target, true)
-//       tree.expandItem(target)
-// 
-//       val itemId = tree.addItem()
-//       tree.setParent(itemId, target)
-//       tree.setChildrenAllowed(itemId, false)
-// 
-//       val item: Item = tree.getItem(itemId)
-//       val name: Property = item.getItemProperty("name")
-//       name.setValue("New Item")
-// 
-//     } else if (action == ACTION_DELETE) {
-//       val parent = tree.getParent(target)
-//       tree.removeItem(target)
-//       if (parent != null && tree.getChildren(parent).size() == 0) {
-//         tree.setChildrenAllowed(parent, false)
-//       }
-//     }
-//   }
-// }
+package com.nonebetwixt.agent.ui
+
+import com.nonebetwixt.agent.model._
+
+import com.vaadin.data.{Item, Property}
+import com.vaadin.data.Property.ValueChangeEvent
+import com.vaadin.data.util.HierarchicalContainer
+import com.vaadin.event.{DataBoundTransferable, Transferable, Action}
+import com.vaadin.event.dd.{DragAndDropEvent, DropHandler}
+import com.vaadin.event.dd.acceptcriteria.{AcceptAll, AcceptCriterion}
+import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation
+import com.vaadin.ui._
+import com.vaadin.ui.VerticalLayout
+import com.vaadin.ui.Window.Notification
+
+import com.vaadin.addon.treetable._
+
+import scala.collection.JavaConversions._
+import scala.collection.immutable.HashMap
+
+import java.util.UUID
+
+class ContentTree(objs: List[ContentItem]) extends TreeTable {
+  var objMap: HashMap[AnyRef, ContentItem] = HashMap.empty
+  
+  addContainerProperty("id", classOf[String], "ID")
+  addContainerProperty("name", classOf[String], "Name")
+  addContainerProperty("value", classOf[String], "Value")
+  addContainerProperty("tags", classOf[Label], "Tags")
+  
+  addContentItems(objs, null)
+  
+  setSizeFull()
+  setColumnExpandRatio("name", 1)
+  setImmediate(true)
+  setItemCaptionPropertyId("name")
+  setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY)
+  setSelectable(true)
+  addStyleName("striped")
+  setVisibleColumns(List("name", "value", "tags").toArray)
+  
+  // Expand all nodes
+  recursivelySetCollapsed(rootItemIds(), false)
+  // setDragMode(Tree.TreeDragMode.NODE)
+  // setDropHandler(new TreeSortDropHandler(this, container))
+  
+  def recursivelySetCollapsed(items: java.util.Collection[_], collapsed: Boolean) {
+    items.asInstanceOf[java.util.Collection[AnyRef]].toList.map(id => {
+      if (hasChildren(id)) {
+        setCollapsed(id, false)
+        recursivelySetCollapsed(getChildren(id), collapsed)
+      }
+    })
+  }
+
+  
+  def addContentItems(objs: List[ContentItem], parentId: AnyRef) {
+    objs.map(obj => {
+      val itemId = this.addItem()
+      this.objMap += (itemId -> obj)
+      this.getContainerProperty(itemId, "id").setValue(obj.getId())
+      this.getContainerProperty(itemId, "name").setValue(obj.getName())
+      this.getContainerProperty(itemId, "value").setValue(obj.getValue())
+      this.getContainerProperty(itemId, "tags").setValue(new Label(obj.getTagsAsHTML(), Label.CONTENT_XHTML))
+      
+      if (parentId != null) {
+        this.setParent(itemId, parentId)
+      }
+      
+      if (obj.hasChildren()) {
+        this.setChildrenAllowed(itemId, true)
+        this.addContentItems(obj.getChildren(), itemId)
+      } else {
+        this.setChildrenAllowed(itemId, false)
+      }
+    })
+  }
+}

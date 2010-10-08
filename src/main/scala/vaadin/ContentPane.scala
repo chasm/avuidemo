@@ -17,83 +17,91 @@ import scala.collection.JavaConversions._
 
 import java.util.UUID
 
-class ContentPane extends VerticalLayout with Property.ValueChangeListener {
+class ContentPane extends VerticalLayout { // with Property.ValueChangeListener {
   setSizeFull()
   setMargin(false)
   setSpacing(false)
   setSizeFull()
   
-  val container = ContentTreeContainer.load()
-  val treeLayout = new SortableContentTree(container, this)
-  val tree = treeLayout.getTree()
+  val userId = AgentServices.getInstance().getCurrentUser.getOrElse(new ContentUser()).getId()
+  val items = ContentItemDAO.getAllWithChildrenAndTagsByUserId(userId)
+  val tree = new ContentTree(items)
   
+  // val container = ContentTreeContainer.load()
+  // val treeLayout = new SortableContentTree(container, this)
+  // val tree = treeLayout.getTree()
+  // 
   val treePanel = new Panel("Manage Your Content")
   treePanel.setSizeFull()
-  treePanel.setContent(treeLayout)
+  treePanel.getContent().setSizeFull()
+  treePanel.getContent().asInstanceOf[VerticalLayout].setMargin(false)
+  treePanel.addComponent(tree)
   treePanel.setScrollable(true)
   treePanel.addStyleName("borderless")
   
-  var ciDisplay = new ContentItemDisplay(container, tree)
-  ciDisplay.addStyleName("borderless")
-  
-  val hsPanel = new SplitPanel(SplitPanel.ORIENTATION_HORIZONTAL)
-  hsPanel.setSplitPosition(320, UNITS_PIXELS)
-  hsPanel.addStyleName(Runo.SPLITPANEL_SMALL)
-  hsPanel.setFirstComponent(treePanel)
-  hsPanel.setSecondComponent(ciDisplay)
-  hsPanel.setSizeFull()
-  hsPanel.setMargin(false)
-
-  def valueChange(event: ValueChangeEvent) {
-    val itemId = event.getProperty().getValue()
-    if (itemId != null) {
-      val selected = container.getItem(itemId)
-      if (selected != null) {
-        val ciId: String = selected.getItemProperty("id").getValue().asInstanceOf[String]
-        val item = ContentItemDAO.get(ciId).getOrElse(new ContentItem())
-        ciDisplay.loadViewer(selected, itemId)
-      }
-    } else {
-      getWindow().showNotification("Item Click", "But nothing found!", Notification.TYPE_TRAY_NOTIFICATION)
-    }
-  }
-  
-  tree.addActionHandler(new Action.Handler() {
-    def getActions(target: AnyRef, sender: AnyRef): Array[Action] = {
-      SortableContentTree.Actions
-    }
-
-    def handleAction(action: Action, sender: AnyRef, target: AnyRef) {
-      val item = tree.getItem(target)
-      action match {
-        case x if (x == SortableContentTree.ActionAdd) => 
-          ciDisplay.loadNew(target)
-          getWindow().showNotification("Add!", "Adding a child item to " +
-            tree.getItem(target).getItemProperty("name").getValue().toString,
-            Notification.TYPE_TRAY_NOTIFICATION)
-        case y if (y == SortableContentTree.ActionDelete) => 
-          getWindow().showNotification("Delete!", "Deleting item " +
-            tree.getItem(target).getItemProperty("name").getValue().toString,
-            Notification.TYPE_TRAY_NOTIFICATION)
-        case _ => 
-          getWindow().showNotification("Whoops!", "Unknown action",
-            Notification.TYPE_TRAY_NOTIFICATION)
-      }
-    }
-  })
-  
-  addComponent(hsPanel)
-  
-  // Find the first child and select and expand the node
-  val rootItems = tree.rootItemIds().toList
-  if (rootItems.nonEmpty) {
-    val children = tree.getChildren(rootItems.head).toList
-    if (children.nonEmpty) {
-      tree.select(children.head)
-      tree.expandItem(rootItems.head)
-      tree.expandItem(children.head)
-    }
-  }
+  addComponent(treePanel)
+  // 
+  // var ciDisplay = new ContentItemDisplay(container, tree)
+  // ciDisplay.addStyleName("borderless")
+  // 
+  // val hsPanel = new SplitPanel(SplitPanel.ORIENTATION_HORIZONTAL)
+  // hsPanel.setSplitPosition(320, UNITS_PIXELS)
+  // hsPanel.addStyleName(Runo.SPLITPANEL_SMALL)
+  // hsPanel.setFirstComponent(treePanel)
+  // hsPanel.setSecondComponent(ciDisplay)
+  // hsPanel.setSizeFull()
+  // hsPanel.setMargin(false)
+  // 
+  // def valueChange(event: ValueChangeEvent) {
+  //   val itemId = event.getProperty().getValue()
+  //   if (itemId != null) {
+  //     val selected = container.getItem(itemId)
+  //     if (selected != null) {
+  //       val ciId: String = selected.getItemProperty("id").getValue().asInstanceOf[String]
+  //       val item = ContentItemDAO.get(ciId).getOrElse(new ContentItem())
+  //       ciDisplay.loadViewer(selected, itemId)
+  //     }
+  //   } else {
+  //     getWindow().showNotification("Item Click", "But nothing found!", Notification.TYPE_TRAY_NOTIFICATION)
+  //   }
+  // }
+  // 
+  // tree.addActionHandler(new Action.Handler() {
+  //   def getActions(target: AnyRef, sender: AnyRef): Array[Action] = {
+  //     SortableContentTree.Actions
+  //   }
+  // 
+  //   def handleAction(action: Action, sender: AnyRef, target: AnyRef) {
+  //     val item = tree.getItem(target)
+  //     action match {
+  //       case x if (x == SortableContentTree.ActionAdd) => 
+  //         ciDisplay.loadNew(target)
+  //         getWindow().showNotification("Add!", "Adding a child item to " +
+  //           tree.getItem(target).getItemProperty("name").getValue().toString,
+  //           Notification.TYPE_TRAY_NOTIFICATION)
+  //       case y if (y == SortableContentTree.ActionDelete) => 
+  //         getWindow().showNotification("Delete!", "Deleting item " +
+  //           tree.getItem(target).getItemProperty("name").getValue().toString,
+  //           Notification.TYPE_TRAY_NOTIFICATION)
+  //       case _ => 
+  //         getWindow().showNotification("Whoops!", "Unknown action",
+  //           Notification.TYPE_TRAY_NOTIFICATION)
+  //     }
+  //   }
+  // })
+  // 
+  // addComponent(hsPanel)
+  // 
+  // // Find the first child and select and expand the node
+  // val rootItems = tree.rootItemIds().toList
+  // if (rootItems.nonEmpty) {
+  //   val children = tree.getChildren(rootItems.head).toList
+  //   if (children.nonEmpty) {
+  //     tree.select(children.head)
+  //     tree.expandItem(rootItems.head)
+  //     tree.expandItem(children.head)
+  //   }
+  // }
 }
 
 class ContentItemDisplay(ctr: ContentTreeContainer, tree: Tree) extends VerticalLayout with ClickListener {
