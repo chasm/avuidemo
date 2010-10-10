@@ -75,7 +75,7 @@ class AgentWindow(caption: String) extends Window(caption) {
     addTab(copManager, "Communities", null)
     addTab(introductionManager, "Introductions", null)
     addTab(invitationManager, "Invitations", null).setVisible(AgentServices.getInstance().isSuperuser())
-    addTab(accountManager, "Account", null)
+    // addTab(accountManager, "Account", null)
   
     // Listen for fragments and swap pages as necessary
     urifu.addListener(new FragmentChangedListener() {

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<items>
+  <item vtype="LABEL">
+    <id>72ad5b30-a602-408f-a397-d0a853213f04</id>
+    <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+    <name>Personal Info</name>
+    <position>0</position>
+    <relationships>
+      <relationship>
+        <name>Public/Anyone</name>
+        <abbr>PA</abbr>
+      </relationship>
+    </relationships>
+    <items>
+      <item vtype="LABEL">
+        <id>237766a5-aab6-432b-bc31-8324ce9677a0</id>
+        <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+        <name>Name</name>
+        <position>0</position>
+        <relationships>
+          <relationship>
+            <name>Public/Anyone</name>
+            <abbr>PA</abbr>
+          </relationship>
+        </relationships>
+        <items>
+          <item vtype="LABEL">
+            <id>5b2fe01b-db5b-4633-9f81-988df5c0168c</id>
+            <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+            <name>Parts</name>
+            <position>0</position>
+            <relationships>
+              <relationship>
+                <name>Public/Anyone</name>
+                <abbr>PA</abbr>
+              </relationship>
+            </relationships>
+            <items>
+              <item vtype="TEXT">
+                <id>37a3bf17-07c9-4069-b1fd-455c7d4ec8e3</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>Honorific</name>
+                <value>Doctor</value>
+                <position>0</position>
+                <relationships>
+                  <relationship>
+                    <name>Public/Anyone</name>
+                    <abbr>PA</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+              <item vtype="TEXT">
+                <id>1b87b408-72c4-439d-ab7f-a29c6210f165</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>Given</name>
+                <value>William</value>
+                <position>1</position>
+                <relationships>
+                  <relationship>
+                    <name>Contact</name>
+                    <abbr>Co</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+              <item vtype="TEXT">
+                <id>ad4b78cf-895d-4063-b00a-295a1adaf217</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>Middle</name>
+                <value>Henry</value>
+                <position>2</position>
+                <relationships>
+                  <relationship>
+                    <name>Trusted Colleague</name>
+                    <abbr>TC</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+              <item vtype="TEXT">
+                <id>633bcbfc-592e-4cff-8595-853a8ed9077a</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>Surname</name>
+                <value>Jones</value>
+                <position>3</position>
+                <relationships>
+                  <relationship>
+                    <name>Contact</name>
+                    <abbr>Co</abbr>
+                  </relationship>
+                  <relationship>
+                    <name>Associate</name>
+                    <abbr>As</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+              <item vtype="TEXT">
+                <id>134f2545-fd7a-43ba-8f0c-acee4dd2f9f8</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>Suffix</name>
+                <value>Ph.D.</value>
+                <position>4</position>
+                <relationships>
+                  <relationship>
+                    <name>Public/Anyone</name>
+                    <abbr>PA</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+            </items>
+          </item>
+          <item vtype="TEXT">
+            <id>e3c14637-dd26-4cd1-8704-4b9518510bd4</id>
+            <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+            <name>Legal Name</name>
+            <value>William H. Jones, Ph.D.</value>
+            <position>1</position>
+            <relationships>
+              <relationship>
+                <name>Public/Anyone</name>
+                <abbr>PA</abbr>
+              </relationship>
+            </relationships>
+          </item>
+          <item vtype="TEXT">
+            <id>ac6c7bec-6c8e-421a-bf0c-7aba7f6992ac</id>
+            <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+            <name>Familiar Name</name>
+            <value>Indiana</value>
+            <position>2</position>
+            <relationships>
+              <relationship>
+                <name>Associate</name>
+                <abbr>As</abbr>
+              </relationship>
+            </relationships>
+          </item>
+          <item vtype="TEXT">
+            <id>284bf812-3c35-4104-883a-5122982efea1</id>
+            <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+            <name>Nickname</name>
+            <value>Indie</value>
+            <position>3</position>
+            <relationships>
+              <relationship>
+                <name>Trusted Colleague</name>
+                <abbr>TC</abbr>
+              </relationship>
+            </relationships>
+          </item>
+        </items>
+      </item>
+      <item vtype="LABEL">
+        <id>53ea8fc5-8fea-4556-9b91-a6a7261197ab</id>
+        <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+        <name>Location</name>
+        <position>1</position>
+        <relationships>
+          <relationship>
+            <name>Public/Anyone</name>
+            <abbr>PA</abbr>
+          </relationship>
+        </relationships>
+        <items>
+          <item vtype="TEXT">
+            <id>b7108c09-af34-4cd8-867b-4e7f2235cff0</id>
+            <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+            <name>Current Metro Area</name>
+            <value>Cairo, Egypt</value>
+            <position>0</position>
+            <relationships>
+              <relationship>
+                <name>Contact</name>
+                <abbr>Co</abbr>
+              </relationship>
+            </relationships>
+          </item>
+          <item vtype="TEXT">
+            <id>231f933f-b77e-4eca-af7e-4d70885b34f9</id>
+            <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+            <name>Current Location</name>
+            <value>Airport</value>
+            <position>1</position>
+            <relationships>
+              <relationship>
+                <name>Trusted Colleague</name>
+                <abbr>TC</abbr>
+              </relationship>
+            </relationships>
+          </item>
+          <item vtype="LABEL">
+            <id>0eb28ca1-f37e-45d7-9194-b66b186b4715</id>
+            <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+            <name>Current Address</name>
+            <position>2</position>
+            <relationships>
+              <relationship>
+                <name>Trusted Colleague</name>
+                <abbr>TC</abbr>
+              </relationship>
+            </relationships>
+            <items>
+              <item vtype="TEXT">
+                <id>9b960a62-714a-4d35-8c1c-64a13c67a767</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>Street Number</name>
+                <value></value>
+                <position>0</position>
+                <relationships>
+                  <relationship>
+                    <name>Associate</name>
+                    <abbr>As</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+              <item vtype="TEXT">
+                <id>abbc1d4b-fe84-4e18-ab51-8df5034d108e</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>Street Name</name>
+                <value></value>
+                <position>1</position>
+                <relationships>
+                  <relationship>
+                    <name>Associate</name>
+                    <abbr>As</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+              <item vtype="TEXT">
+                <id>0d892874-db8d-483f-8094-66b4c582a9ec</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>Street Type</name>
+                <value></value>
+                <position>2</position>
+                <relationships>
+                  <relationship>
+                    <name>Associate</name>
+                    <abbr>As</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+              <item vtype="TEXT">
+                <id>aa2aba48-f72a-4c19-a07a-14111997a8da</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>City</name>
+                <value></value>
+                <position>3</position>
+                <relationships>
+                  <relationship>
+                    <name>Associate</name>
+                    <abbr>As</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+              <item vtype="TEXT">
+                <id>f51a1f68-6c9c-493d-935f-a6b757546f06</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>State</name>
+                <value></value>
+                <position>4</position>
+                <relationships>
+                  <relationship>
+                    <name>Associate</name>
+                    <abbr>As</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+              <item vtype="TEXT">
+                <id>0ce756df-0996-4498-b8b2-83bb4e83fd00</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>Zip Code</name>
+                <value></value>
+                <position>5</position>
+                <relationships>
+                  <relationship>
+                    <name>Associate</name>
+                    <abbr>As</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+              <item vtype="TEXT">
+                <id>0a436fc9-d1a7-4bfa-833b-7be70f885b9c</id>
+                <agent>agent:e0ade6ee-a1b4-4ec4-8b0f-b0cfee65a84a</agent>
+                <name>Country</name>
+                <value>US</value>
+                <position>6</position>
+                <relationships>
+                  <relationship>
+                    <name>Associate</name>
+                    <abbr>As</abbr>
+                  </relationship>
+                </relationships>
+              </item>
+            </items>
+          </item>
+        </items>
+      </item>
+    </items>
+  </item>
+</items>

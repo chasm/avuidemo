@@ -53,12 +53,12 @@ object ItemTagDAO {
     DbSession.getContentAccessor().itemTagsById.entities().toList
   }
   
-  def getByItemId(itemId: String): List[ItemTag] = {
+  def getAllByItemId(itemId: String): List[ItemTag] = {
     DbSession.getContentAccessor().itemTagsByItemId.subIndex(itemId).entities().toList
   }
   
   def getTagNamesByItemId(itemId: String): List[String] = {
-    getByItemId(itemId).map(_.tagName)
+    getAllByItemId(itemId).map(_.tagName)
   }
   
   def deleteById(id: String) {

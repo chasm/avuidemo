@@ -84,19 +84,20 @@ class ContentItem(ui: String, pi: String, n: String, v: String, vt: String, u: S
     "<span class=\"tag_" + t.getAbbr() + "\" title=\"" + t.getName() + "\">" + t.getAbbr() + "</span>"
   }).mkString(" ")
   
-  
   override def toString(): String = this.name + ": " + this.value + " (" + this.vtype + ")"
 }
 
 object ContentItemDAO {
   
-  def put(contentItem: ContentItem) = DbSession.getContentAccessor().contentItemsById.put(contentItem)
+  def put(contentItem: ContentItem) = {
+    println("VALUE: " + contentItem.getValue())
+    DbSession.getContentAccessor().contentItemsById.put(contentItem)
+  }
   
   def put(contentItems: List[ContentItem]) {
     val ca = DbSession.getContentAccessor()
     
     contentItems.map(ci => {
-      // println("Putting content item: " + ci.getName())
       ca.contentItemsById.put(ci)
     })
   }
@@ -125,7 +126,6 @@ object ContentItemDAO {
     var tags = ContentTagDAO.getAll().map(ct => (ct.getName(), ct)).toMap
     var items = getAllByUserId(userId).map(ci => (ci.getId(), ci)).toMap
     val its = ItemTagDAO.getAll()
-    
     its.map(it => {
       if (items.contains(it.getItemId())) {
         items(it.getItemId()).addTag(tags(it.getTagName()))
@@ -139,6 +139,20 @@ object ContentItemDAO {
     
     val list = items.map(ci => ci._2).toList.filter(ci => ci.parentId == null)
     list
+  }
+  
+  def deleteById(id: String) {
+    DbSession.getContentAccessor().contentItemsById.delete(id)
+  }
+  
+  def delete(contentItem: ContentItem) {
+    deleteById(contentItem.getId())
+  }
+  
+  def delete(contentItems: List[ContentItem]) {
+    contentItems.map(contentItem => {
+      deleteById(contentItem.getId())
+    })
   }
   
 }

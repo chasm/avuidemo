@@ -326,9 +326,12 @@ td.v-datefield-calendarpanel-month,
 	}
 
 .v-panel-caption,
-.v-table-striped .v-table-row-odd,
 .sidebar-menu {
 	background: rgb(196,202,188);
+	}
+
+.v-table-striped .v-table-row-odd {
+	background: rgb(235,236,235);
 	}
 
 .sidebar-menu .tab-selected,
@@ -443,7 +446,7 @@ div.tag_TC span, span.tag_TC { color: #ffffff; background: #1d5b80; }
 div.tag_Mr span, span.tag_Mr { color: #ffffff; background: #9f36b7; }
 div.tag_Me span, span.tag_Me { color: #ffffff; background: #da74f3; }
 div.tag_EF span, span.tag_EF { color: #000000; background: #8ed3a6; }
-div.tag_IF span, span.tag_IF { color: #000000; background: #0f8a39; }
+div.tag_IF span, span.tag_IF { color: #ffffff; background: #0f8a39; }
 div.tag_CC span, span.tag_CC { color: #000000; background: #dee072; }
 div.tag_Pr span, span.tag_Pr { color: #ffffff; background: #990000; }
 

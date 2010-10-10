@@ -69,14 +69,14 @@ class SortableContentTree(container: HierarchicalContainer, listener: Property.V
           moveNode(sourceItemId, targetItemId, location)
           if (!tree.hasChildren(parentId)) tree.setChildrenAllowed(parentId, false)
           if (!tree.hasChildren(sourceItemId)) tree.setChildrenAllowed(sourceItemId, false)
-          recursivelyUpdatePositions(tree.rootItemIds().toList.asInstanceOf[List[AnyRef]])
+          recursivelyUpdatePositionsAndParents(tree.rootItemIds().toList.asInstanceOf[List[AnyRef]])
         } catch {
           case e => e.printStackTrace
         }
       }
     }
     
-    def recursivelyUpdatePositions(items: List[AnyRef]) {
+    def recursivelyUpdatePositionsAndParents(items: List[AnyRef]) {
       items.zipWithIndex.map(x => {
         val item = tree.getItem(x._1)
         val id = item.getItemProperty("id").getValue().toString
@@ -92,7 +92,7 @@ class SortableContentTree(container: HierarchicalContainer, listener: Property.V
         }
         
         if (tree.hasChildren(x._1)) {
-          recursivelyUpdatePositions(tree.getChildren(x._1).toList.asInstanceOf[List[AnyRef]])
+          recursivelyUpdatePositionsAndParents(tree.getChildren(x._1).toList.asInstanceOf[List[AnyRef]])
         }
       })
     }

@@ -132,10 +132,10 @@ object TestData {
         val mid = new ContentItem(u.getId(), pts.getId(), "Middle", "", "String", "", 2)
         val mid_tc = new ItemTag(mid.getId(), tc_tag.getName())
       
-        val surn = new ContentItem(u.getId(), pts.getId(), "Surname", "", "String", "", 3)
-        val surn_co = new ItemTag(surn.getId(), co_tag.getName())
+        val famn = new ContentItem(u.getId(), pts.getId(), "Surname", "", "String", "", 3)
+        val famn_co = new ItemTag(famn.getId(), co_tag.getName())
       
-        val suf = new ContentItem(u.getId(), pts.getId(), "Suffix", "", "String", "", 3)
+        val suf = new ContentItem(u.getId(), pts.getId(), "Suffix", "", "String", "", 4)
         val suf_pa = new ItemTag(suf.getId(), pa_tag.getName())
       
         val leg = new ContentItem(u.getId(), name.getId(), "Legal Name", "", "String", "", 1)
@@ -184,12 +184,12 @@ object TestData {
         val cntry_pa = new ItemTag(cntry.getId(), pa_tag.getName())
         
         val cItems = List(
-          pInfo, name, pts, hon, given, mid, surn, suf, leg, fn, nn, loc,
+          pInfo, name, pts, hon, given, mid, famn, suf, leg, fn, nn, loc,
           curmet, curloc, curadd, strnum, strnam, strtyp, cit, stat, zip, pl4, cntry
         )
         
         val iTags = List(
-          name_pa, pts_pa, hon_pa, given_co, given_aq, mid_tc, surn_co, suf_pa,
+          name_pa, pts_pa, hon_pa, given_co, given_aq, mid_tc, famn_co, suf_pa,
           leg_pa, fn_as, nn_tc, loc_pa, curmet_co, curloc_tc, curadd_as, strnum_as,
           strnam_as, strtyp_as, cit_as, stat_as, zip_as, pl4_as, cntry_pa
         )

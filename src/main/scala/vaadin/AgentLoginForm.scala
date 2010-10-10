@@ -45,6 +45,7 @@ class AgentLoginForm(code: String) extends FormLayout {
         getWindow().open(new ExternalResource(AgentServices.getInstance().getURL()))
       } catch {
         case e => getWindow().showNotification(e.toString())
+          e.printStackTrace()
       }
     }
   })

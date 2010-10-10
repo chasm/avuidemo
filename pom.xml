@@ -112,6 +112,43 @@
       <artifactId>uuid</artifactId>
       <version>3.1</version>
     </dependency>
+    <dependency>
+      <groupId>net.liftweb</groupId>
+      <artifactId>lift-mapper_2.8.0</artifactId>
+      <version>2.1</version>
+    </dependency>  
+    <dependency>
+      <groupId>net.liftweb</groupId>
+      <artifactId>lift-amqp_2.8.0</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.liftweb</groupId>
+      <artifactId>lift-common_2.8.0</artifactId>
+      <version>2.1-RC2</version>
+    </dependency>
+    <dependency>
+      <groupId>net.liftweb</groupId>
+      <artifactId>lift-json_2.8.0</artifactId>
+      <version>2.1</version>
+    </dependency>
+    
+    <!-- for Prolog capabilities -->
+    <dependency>
+      <groupId>alice.tuprolog</groupId>
+      <artifactId>2p</artifactId>
+      <version>local</version>
+    </dependency>
+    <dependency>
+      <groupId>org.prolog4j</groupId>
+      <artifactId>prolog4j-api-0.2.0</artifactId>
+      <version>local</version>
+    </dependency>
+    <dependency>
+      <groupId>org.prolog4j</groupId>
+      <artifactId>prolog4j-tuprolog-0.2.0</artifactId>
+      <version>local</version>
+    </dependency>
     <!-- Squeryl ORM -->
     <dependency>
       <groupId>org.squeryl</groupId>
@@ -399,7 +436,7 @@
             <jvmArg>-Xmx1024m</jvmArg>
           </jvmArgs>
           <args>
-            <!-- <arg>-P:continuations:enable</arg> -->
+            <arg>-P:continuations:enable</arg>
             <!-- <arg>-unchecked</arg> -->
             <!-- <arg>-deprecation</arg> -->
             <!-- <arg>-make:transitivenocp</arg> -->
