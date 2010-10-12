@@ -1,5 +1,5 @@
 // -*- mode: Scala;-*- 
-// Filename:    Tribe.scala 
+// Filename:    Junction.scala 
 // Authors:     lgm                                                    
 // Creation:    Fri Oct  8 17:29:51 2010 
 // Copyright:   Not supplied 
@@ -8,6 +8,8 @@
 
 package com.biosimilarity.lift.model.store
 
+import com.biosimilarity.lift.model.agent._
+import com.biosimilarity.lift.model.msg._
 import com.biosimilarity.lift.lib._
 import net.liftweb.amqp._
 
@@ -29,100 +31,149 @@ import java.net.URI
 import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 
-trait Rabitter {
-  def configure(
-    cf : ConnectionFactory,
-    host : String,
-    port : Int
-  )(
-    channel: Channel
-  ) : Int
-
-  def rabbitFactory() : (ConnectionParameters, ConnectionFactory) = {
-    val params = new ConnectionParameters
-    // All of the params, exchanges, and queues are all just example data.
-    params.setUsername("guest")
-    params.setPassword("guest")
-    params.setVirtualHost("/")
-    params.setRequestedHeartbeat(0)
-    (params, new ConnectionFactory(params))
-  }
-
-  def rabbitTube(
-    cnxnFctry : ConnectionFactory,
-    host : String,
-    port : Int
-  ) = {
-    val conn = cnxnFctry.newConnection( host, port )
-    val channel = conn.createChannel()
-    val ticket = configure( cnxnFctry, host, port )( channel )
-
-    ( conn, channel, ticket )
-  }
-
-  def send [T] (
-    channel : Channel,
-    exchange : String,
-    routingKey : String,
-    ticket : Int
-    )(
-    msg: T
-  ) {
-      // Now write an object to a byte array and shove it across the wire.
-      val bytes = new ByteArrayOutputStream
-      val store = new ObjectOutputStream(bytes)
-      store.writeObject(msg)
-      store.close
-      channel.basicPublish(
-	ticket,
-	exchange,
-	routingKey,
-	null,
-	bytes.toByteArray
-      )
-    }  
-}
-
 trait OZ[GetRequest,GetContinuation] {
   def hostToOutstandingReqs : Map[URI,(GetRequest,GetContinuation)]
 }
 
-trait Warren {
-  def selfIdentity : UUID
-  def jsonSender : Seq[StdJSONOverAMQPSender]
-  def jsonDispatcher : Seq[JSONAMQPListener]
+trait Collective[Namespace,Var,Tag,Value]
+extends EndPoint[Namespace,Var,Tag,Value] {
+  def selfIdentity : URI
+  def agentTwistedPairs : Map[URI,AgentTwistedPair[Namespace,Var,Tag,Value]]
   def acquaintances : Seq[URI]
 
-  def tunnel() : ( Seq[StdJSONOverAMQPSender], Seq[JSONAMQPListener] ) = {
-    val sndrRcvrPairs =
-      for( acquaintance <- acquaintances )
-      yield {
-	(
-	  new StdJSONOverAMQPSender( acquaintance.getHost ), 
-	  new JSONAMQPListener( acquaintance.getHost )
+  override def location : URI = selfIdentity
+
+  case class URIEndPointWrapper( override val location : URI )
+  extends EndPoint[Namespace,Var,Tag,Value] {
+    def handleRequest( 
+      dmsg : JustifiedRequest[DistributedTermSpaceRequest[Namespace,Var,Tag,Value],DistributedTermSpaceResponse[Namespace,Var,Tag,Value]]
+    ) : Boolean = {
+      throw new Exception( "Attempt to have a reference handle a request" )
+    }
+    def handleResponse( 
+      dmsg : DistributedTermSpaceResponse[Namespace,Var,Tag,Value]
+    ) : Boolean = {
+      throw new Exception( "Attempt to have a reference handle a response" )
+    }
+  }
+
+  implicit def URIasEndPoint(
+    uri : URI
+  ) : EndPoint[Namespace,Var,Tag,Value] = {
+    URIEndPointWrapper( uri )
+  }    
+  
+  def meetNGreet( acquaintances : Seq[URI] )
+  : Map[URI,AgentTwistedPair[Namespace,Var,Tag,Value]] =
+  {
+    val map = new HashMap[URI,AgentTwistedPair[Namespace,Var,Tag,Value]]()
+    for( acquaintance <- acquaintances )
+    yield {
+      map( acquaintance ) =
+	new AgentTwistedPair[Namespace,Var,Tag,Value](
+	  this,
+	  acquaintance
 	)
-      }
-    sndrRcvrPairs.unzip
+    }
+    map
   }
 }
 
-class Tribe[Namespace,Var,Tag,Value](
-  override val selfIdentity : UUID,
-  override val jsonSender : Seq[StdJSONOverAMQPSender],
-  override val jsonDispatcher : Seq[JSONAMQPListener],
+class Junction[Namespace,Var,Tag,Value](
+  override val selfIdentity : URI,  
   override val acquaintances : Seq[URI]
 ) extends TermStore[Namespace,Var,Tag,Value]
-with Warren
-with DrumTalk {
+with Collective[Namespace,Var,Tag,Value] {  
+  override lazy val agentTwistedPairs
+  : Map[URI,AgentTwistedPair[Namespace,Var,Tag,Value]] =
+    meetNGreet( acquaintances )
   
-  trait DMsg
-  case class DGet( path : CnxnCtxtLabel[Namespace,Var,Tag] )
-       extends DMsg
-
   def forwardGet( path : CnxnCtxtLabel[Namespace,Var,Tag] ) : Unit = {
-    for( jsndr <- jsonSender ) {
-      jsndr.send( DGet( path ) )
+    for( ( uri, jsndr ) <- agentTwistedPairs ) {
+      jsndr.send( DGetRequest[Namespace,Var,Tag,Value]( path ) )
     }
+  }
+
+  override def handleRequest(
+    dmsg : JustifiedRequest[DistributedTermSpaceRequest[Namespace,Var,Tag,Value],DistributedTermSpaceResponse[Namespace,Var,Tag,Value]]
+  ) : Boolean = {
+    dmsg match {
+      case JustifiedRequest(
+	msgId, mtrgt, msrc, lbl, body, _
+      ) => { 
+	// Handle a justified request with no initiating response	  
+	body match {
+	  case DGetRequest( path ) => {
+	    val k =
+	      {
+		( v : Option[Resource] ) => {
+		  //tap( v )
+		  for(
+		    atp <- agentTwistedPairs.get( msrc );
+		    value <- v
+		  ) {
+		    value match {
+		      case Ground( gv ) =>
+			atp.send(
+			  DGetResponse[Namespace,Var,Tag,Value](
+			    path,
+			    gv
+			  )
+			)
+		    }
+		  }
+		  v
+		}
+	      }
+	    get( path, k )
+	  }
+	  case DFetchRequest( path ) => {
+	    val k =
+	      {
+		( v : Option[Resource] ) => {
+		  //tap( v )
+		  for(
+		    atp <- agentTwistedPairs.get( msrc );
+		    value <- v
+		  ) {
+		    value match {
+		      case Ground( gv ) =>
+			atp.send(
+			  DGetResponse[Namespace,Var,Tag,Value](
+			    path,
+			    gv
+			  )
+			)
+		    }
+		  }
+		  v
+		}
+	      }
+	    fetch( path, k )
+	  }
+	  case DPutRequest( path, value ) => {	
+	    put( path, value )
+	  }
+	}
+      }
+    }    
+    true
+  }
+
+  override def handleResponse(
+    dmsg : DistributedTermSpaceResponse[Namespace,Var,Tag,Value]
+  ) : Boolean = {
+    dmsg match {
+      case DGetResponse( path, value ) => {
+	put( path, value )
+      }
+      case DFetchResponse( path, value ) => {
+	put( path, value )
+      }
+      case dput : DPutResponse[Namespace,Var,Tag,Value] => {	
+      }
+    }
+    true
   }
 
   override def get(
@@ -161,5 +212,6 @@ with DrumTalk {
 	}	
       }
     }    
-  }
+  }  
+  
 }
