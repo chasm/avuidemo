@@ -13,6 +13,8 @@ import com.vaadin.ui._
 import com.vaadin.ui.Button.ClickListener
 import com.vaadin.terminal.ExternalResource
 
+import org.vaadin.tinymceeditor._
+
 import java.util.{Date}
 
 import reflect.{BeanProperty,BeanDisplayName}
@@ -44,9 +46,9 @@ class ReplyForm(post: Post, parent: PostDisplay, parentId: AnyRef)
   subject.setValue(newPost.getSubject())
   subject.setWidth("100%")
   
-  val body = new RichTextArea()
+  val body = new TinyMCETextField()
   body.setWidth("100%")
-  body.setHeight("250px")
+  body.setHeight("460px")
   
   val btnBar = new HorizontalLayout()
   btnBar.setHeight("72px")

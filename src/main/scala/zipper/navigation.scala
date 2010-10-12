@@ -6,7 +6,7 @@
 // Description: 
 // ------------------------------------------------------------------------
 
-package com.biosimilarity.validation.zipper
+package com.biosimilarity.lift.model.zipper
 
 trait ZipperNavigation[A] {
   def left( location : Location[A] ) : Location[A] = {

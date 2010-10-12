@@ -6,7 +6,7 @@
 // Description: 
 // ------------------------------------------------------------------------
 
-package com.biosimilarity.validation.zipper
+package com.biosimilarity.lift.model.zipper
 
 trait ZipperMutation[A] {
   def update(

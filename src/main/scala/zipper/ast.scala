@@ -6,7 +6,7 @@
 // Description: 
 // ------------------------------------------------------------------------
 
-package com.biosimilarity.validation.zipper
+package com.biosimilarity.lift.model.zipper
 
 case class Token[A](
   override val item : A

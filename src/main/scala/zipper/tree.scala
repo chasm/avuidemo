@@ -6,7 +6,7 @@
 // Description: 
 // ------------------------------------------------------------------------
 
-package com.biosimilarity.validation.zipper
+package com.biosimilarity.lift.model.zipper
 
 trait Tree[A]
 class TreeItem[A]( val item : A ) extends Tree[A]

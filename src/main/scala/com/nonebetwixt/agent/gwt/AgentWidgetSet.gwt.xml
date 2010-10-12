@@ -22,4 +22,6 @@
     <inherits name="com.nonebetwixt.agent.gwt.AgentWidgetSet" />
 
     <inherits name="com.vaadin.addon.treetable.TreetableWidgetset" />
+
+    <inherits name="org.vaadin.tinymceeditor.widgetset.TinymceeditorWidgetset" />
 </module>

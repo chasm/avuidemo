@@ -13,6 +13,8 @@ import com.vaadin.terminal.ThemeResource
 import com.vaadin.ui.themes._
 import com.vaadin.ui.Button.ClickListener
 
+import org.vaadin.tinymceeditor._
+
 import scala.collection.JavaConversions._
 
 import java.util.UUID
@@ -86,8 +88,8 @@ class ViewContentWindow(tree: ContentTree, itemId: AnyRef) extends Window {
 class NewContentWindow(tree: ContentTree, parentItemId: AnyRef)
     extends Window with ClickListener {
   
-  setWidth("640px")
-  setHeight("450px")
+  setWidth("702px")
+  setHeight("460px")
   center()
   
   val parent = parentItemId match {
@@ -109,7 +111,7 @@ class NewContentWindow(tree: ContentTree, parentItemId: AnyRef)
   }
   
   val tagsLbl = new Label("Relationships")
-  nameLbl.setWidth("80px")
+  tagsLbl.setWidth("80px")
   
   val tagContainer = ContentTagContainer.load.getOrElse(new ContentTagContainer(List()))
   
@@ -142,7 +144,7 @@ class NewContentWindow(tree: ContentTree, parentItemId: AnyRef)
   header.setExpandRatio(tagsLbl, 1f)
   header.setComponentAlignment(save, Alignment.TOP_RIGHT)
   
-  val rta = new RichTextArea("Content")
+  val rta = new TinyMCETextField()
   rta.setWidth("100%")
   rta.setHeight("320px")
   
@@ -219,8 +221,8 @@ class NewContentWindow(tree: ContentTree, parentItemId: AnyRef)
 
 class EditContentWindow(tree: ContentTree, item: Item, itemId: AnyRef, obj: ContentItem)
     extends Window with ClickListener {
-  setWidth("640px")
-  setHeight("450px")
+  setWidth("702px")
+  setHeight("460px")
   center()
   
   val nameLbl = new Label("Item")
@@ -261,7 +263,7 @@ class EditContentWindow(tree: ContentTree, item: Item, itemId: AnyRef, obj: Cont
   header.setExpandRatio(tagsLbl, 1f)
   header.setComponentAlignment(update, Alignment.TOP_RIGHT)
   
-  val rta = new RichTextArea("Content")
+  val rta = new TinyMCETextField()
   rta.setWidth("100%")
   rta.setHeight("320px")
   rta.setValue(item.getItemProperty("value").getValue().asInstanceOf[String])
