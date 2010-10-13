@@ -39,10 +39,10 @@ class ItemTag(ii: String, tn: String) {
 
 object ItemTagDAO {
   
-  def put(itemTag: ItemTag) = DbSession.getContentAccessor().itemTagsById.put(itemTag)
+  def put(itemTag: ItemTag) = DbSession.contentAccessor.itemTagsById.put(itemTag)
   
   def put(itemTags: List[ItemTag]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     
     itemTags.map(it => {
       ca.itemTagsById.put(it)
@@ -50,11 +50,11 @@ object ItemTagDAO {
   }
   
   def getAll(): List[ItemTag] = {
-    DbSession.getContentAccessor().itemTagsById.entities().toList
+    DbSession.contentAccessor.itemTagsById.entities().toList
   }
   
   def getAllByItemId(itemId: String): List[ItemTag] = {
-    DbSession.getContentAccessor().itemTagsByItemId.subIndex(itemId).entities().toList
+    DbSession.contentAccessor.itemTagsByItemId.subIndex(itemId).entities().toList
   }
   
   def getTagNamesByItemId(itemId: String): List[String] = {
@@ -62,7 +62,7 @@ object ItemTagDAO {
   }
   
   def deleteById(id: String) {
-    DbSession.getContentAccessor().itemTagsById.delete(id)
+    DbSession.contentAccessor.itemTagsById.delete(id)
   }
   
   def delete(itemTag: ItemTag) {

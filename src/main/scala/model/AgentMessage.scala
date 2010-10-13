@@ -57,10 +57,10 @@ class AgentMessage(ui: String, st: String, rt: String, b: String) {
 
 object AgentMessageDAO {
   
-  def put(agentMessage: AgentMessage) = DbSession.getContentAccessor().agentMessagesById.put(agentMessage)
+  def put(agentMessage: AgentMessage) = DbSession.contentAccessor.agentMessagesById.put(agentMessage)
   
   def put(agentMessages: List[AgentMessage]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     
     agentMessages.map(am => {
       ca.agentMessagesById.put(am)
@@ -68,25 +68,25 @@ object AgentMessageDAO {
   }
   
   def get(id: String): Option[AgentMessage] = {
-    DbSession.getContentAccessor().agentMessagesById.get(id) match {
+    DbSession.contentAccessor.agentMessagesById.get(id) match {
       case null => None
       case i => Some(i)
     }
   }
   
   def getAll(): List[AgentMessage] = {
-    DbSession.getContentAccessor().agentMessagesById.entities().toList
+    DbSession.contentAccessor.agentMessagesById.entities().toList
   }
   
   def getAllByUserId(userId: String): List[AgentMessage] = {
-    DbSession.getContentAccessor().agentMessagesByUserId.subIndex(userId).entities().toList
+    DbSession.contentAccessor.agentMessagesByUserId.subIndex(userId).entities().toList
   }
   
   def getAllBySentToId(sentToId: String): List[AgentMessage] = {
-    DbSession.getContentAccessor().agentMessagesBySentToId.subIndex(sentToId).entities().toList
+    DbSession.contentAccessor.agentMessagesBySentToId.subIndex(sentToId).entities().toList
   }
   
   def getAllByReplyToId(replyToId: String): List[AgentMessage] = {
-    DbSession.getContentAccessor().agentMessagesByReplyToId.subIndex(replyToId).entities().toList
+    DbSession.contentAccessor.agentMessagesByReplyToId.subIndex(replyToId).entities().toList
   }
 }

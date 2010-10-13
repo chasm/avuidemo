@@ -13,14 +13,26 @@ import java.util.Locale._
 import java.text.DateFormat._
 
 @Entity
-class Cop(su: String, n: String, d: String) {
+class Cop(uuid: String, su: String, n: String, d: String) {
   
   def this() = {
-    this("","","")
+    this("","","","")
+  }
+  
+  def this(uuid: String) = {
+    this(uuid,"","","")
+  }
+  
+  def this(su: String, n: String, d: String) = {
+    this("",su,n,d)
   }
   
   @PrimaryKey
-  val id: String = UUID.randomUUID.toString
+  val id: String = try {
+    UUID.fromString(uuid).toString
+  } catch {
+    case _ => UUID.randomUUID.toString
+  }
   
   @SecondaryKey(relate=MANY_TO_ONE, relatedEntity=classOf[ContentUser], onRelatedEntityDelete=ABORT)
   var userId: String = su
@@ -56,10 +68,10 @@ class Cop(su: String, n: String, d: String) {
 
 object CopDAO {
   
-  def put(cop: Cop) = DbSession.getContentAccessor().copsById.put(cop)
+  def put(cop: Cop) = DbSession.contentAccessor.copsById.put(cop)
   
   def put(cops: List[Cop]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     
     cops.map(c => {
       ca.copsById.put(c)
@@ -67,22 +79,22 @@ object CopDAO {
   }
   
   def get(id: String): Option[Cop] = {
-    DbSession.getContentAccessor().copsById.get(id) match {
+    DbSession.contentAccessor.copsById.get(id) match {
       case null => None
       case i => Some(i)
     }
   }
   
   def getAll(): List[Cop] = {
-    DbSession.getContentAccessor().copsById.entities().toList
+    DbSession.contentAccessor.copsById.entities().toList
   }
   
   def getAllByName(name: String): List[Cop] = {
-    DbSession.getContentAccessor().copsByName.subIndex(name).entities().toList
+    DbSession.contentAccessor.copsByName.subIndex(name).entities().toList
   }
   
   def getAllByIsActive(isActive: Boolean): List[Cop] = {
-    DbSession.getContentAccessor().copsByIsActive.subIndex(isActive).entities().toList
+    DbSession.contentAccessor.copsByIsActive.subIndex(isActive).entities().toList
   }
 }
   

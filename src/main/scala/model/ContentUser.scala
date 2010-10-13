@@ -70,10 +70,10 @@ class ContentUser(uuid: String, nf: String, nl: String, ea: String, pw: String) 
 
 object ContentUserDAO {
   
-  def put(contentUser: ContentUser) = DbSession.getContentAccessor().contentUsersById.put(contentUser)
+  def put(contentUser: ContentUser) = DbSession.contentAccessor.contentUsersById.put(contentUser)
   
   def put(contentUsers: List[ContentUser]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     
     contentUsers.map(cu => {
       ca.contentUsersById.put(cu)
@@ -81,13 +81,13 @@ object ContentUserDAO {
   }
   
   def get(id: String): Option[ContentUser] = {
-    DbSession.getContentAccessor().contentUsersById.get(id) match {
+    DbSession.contentAccessor.contentUsersById.get(id) match {
       case null => None
       case i => Some(i)
     }
   }
   
   def getAll(): List[ContentUser] = {
-    DbSession.getContentAccessor().contentUsersById.entities().toList
+    DbSession.contentAccessor.contentUsersById.entities().toList
   }
 }

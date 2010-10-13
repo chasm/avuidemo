@@ -38,7 +38,7 @@ class AgentLoginWindow(caption: String) extends Window(caption) {
   pageLayout.addComponent(urifu)
 
   // Build the page
-  var page: LoginPage = new LoginPage("00000000-1111-2222-3333-444444444444") // currentCode.getOrElse("") CHANGE THIS!
+  var page: LoginPage = new LoginPage(currentCode.getOrElse(""))
   pageLayout.addComponent(new Logo())
   pageLayout.addComponent(page)
   pageLayout.addComponent(new Footer())
@@ -54,7 +54,7 @@ class AgentLoginWindow(caption: String) extends Window(caption) {
       if (fragment != null) {
         if (uuidRegex.findFirstIn(fragment).isDefined) {
           currentCode = Some(fragment)
-          val newPage = new LoginPage("00000000-1111-2222-3333-444444444444") // currentCode.getOrElse("") CHANGE THIS!
+          val newPage = new LoginPage(currentCode.getOrElse(""))
           pageLayout.replaceComponent(page, newPage)
           page = newPage
           urifu.setFragment(null, true)

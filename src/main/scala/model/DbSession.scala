@@ -8,64 +8,56 @@ import com.sleepycat.persist.{EntityStore, StoreConfig}
 import java.io.File
 
 object DbSession {
-  var env: Option[Environment] = None
-  var store: Option[EntityStore] = None
+  val dbFile: File = AgentServices.cmFile
+  val envConfig = new EnvironmentConfig()
+  val storeConfig = new StoreConfig()
+  var env: Environment = null
+  var store: EntityStore = null
+  var contentAccessor: ContentAccessor = null
+  
+  try {
+    envConfig.setAllowCreate(true)
+    storeConfig.setAllowCreate(true)
+    env = new Environment(dbFile, envConfig)
+    storeConfig.setAllowCreate(true)
+    store = new EntityStore(env, "ContentManager", storeConfig)
+    contentAccessor = new ContentAccessor(store)
+  } catch {
+    case e => println("\n***** ERROR: DbSession init(dbFile) FAILED: " + e.toString + " *****\n")
+  }
 
   def getEntityStore(dbFile: File): Option[EntityStore] = {
     store match {
-      case None => init(dbFile)
-      case _ => 
+      case null => None
+      case s => Some(s)
     }
-    store
   }
-  
-  def getContentAccessor(): ContentAccessor =
-    new ContentAccessor(getEntityStore(AgentServices.cmFile).getOrElse(null))
   
   def getEnv(dbFile: File): Option[Environment] = {
     env match {
-      case None => init(dbFile)
-      case _ =>
+      case null => None
+      case e => Some(e)
     }
-    env
   }
   
   def close() {
     store match {
-      case Some(s) =>
+      case null =>
+      case s =>
         try {
           s.close()
         } catch {
           case dbe: DatabaseException => println("\n***** ERROR CLOSING STORE: " + dbe.toString + " *****\n")
         }
-      case None =>
     }
     env match {
-      case Some(e) =>
+      case null =>
+      case e =>
         try {
           e.close()
         } catch {
           case dbe: DatabaseException => println("\n***** ERROR CLOSING ENVIRONMENT: " + dbe.toString + " *****\n")
         }
-      case None =>
     }
   }
-  
-  private def init(dbFile: File) {
-    try {
-      val envConfig = new EnvironmentConfig()
-      envConfig.setAllowCreate(true)
-
-      env = Some(new Environment(dbFile, envConfig))
-
-      val storeConfig = new StoreConfig()
-      storeConfig.setAllowCreate(true)
-
-      store = Some(new EntityStore(env.get, "ContentManager", storeConfig))
-
-    } catch {
-      case e => println("\n***** ERROR: DbSession init(dbFile) FAILED: " + e.toString + " *****\n")
-    }
-  }
-  
 }

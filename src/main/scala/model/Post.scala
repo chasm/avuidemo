@@ -14,14 +14,26 @@ import java.util.Locale._
 import java.text.DateFormat._
 
 @Entity
-class Post(ci: String, ui: String, fi: String, rt: String, s: String, b: String) {
+class Post(uuid: String, ci: String, ui: String, fi: String, rt: String, s: String, b: String) {
   
   def this() = {
-    this("","","","","","")
+    this("","","","","","","")
+  }
+  
+  def this(uuid: String) = {
+    this(uuid,"","","","","","")
+  }
+  
+  def this(ci: String, ui: String, fi: String, rt: String, s: String, b: String) = {
+    this("",ci,ui,fi,rt,s,b)
   }
   
   @PrimaryKey
-  val id: String = UUID.randomUUID.toString
+  val id: String = try {
+    UUID.fromString(uuid).toString
+  } catch {
+    case _ => UUID.randomUUID.toString
+  }
   
   @SecondaryKey(relate=MANY_TO_ONE, relatedEntity=classOf[Cop], onRelatedEntityDelete=ABORT)
   var copId: String = ci
@@ -85,40 +97,40 @@ class Post(ci: String, ui: String, fi: String, rt: String, s: String, b: String)
 
 object PostDAO {
   
-  def put(post: Post) = DbSession.getContentAccessor().postsById.put(post)
+  def put(post: Post) = DbSession.contentAccessor.postsById.put(post)
   
   def put(posts: List[Post]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     posts.map(p => {
       ca.postsById.put(p)
     })
   }
   
   def get(id: String): Option[Post] = {
-    DbSession.getContentAccessor().postsById.get(id) match {
+    DbSession.contentAccessor.postsById.get(id) match {
       case null => None
       case i => Some(i)
     }
   }
   
   def getAll(): List[Post] = {
-    DbSession.getContentAccessor().postsById.entities().toList
+    DbSession.contentAccessor.postsById.entities().toList
   }
   
   def getAllByCopId(copId: String): List[Post] = {
-    DbSession.getContentAccessor().postsByCopId.subIndex(copId).entities().toList
+    DbSession.contentAccessor.postsByCopId.subIndex(copId).entities().toList
   }
   
   def getAllByUserId(userId: String): List[Post] = {
-    DbSession.getContentAccessor().postsByUserId.subIndex(userId).entities().toList
+    DbSession.contentAccessor.postsByUserId.subIndex(userId).entities().toList
   }
   
   def getAllByForumId(forumId: String): List[Post] = {
-    DbSession.getContentAccessor().postsByForumId.subIndex(forumId).entities().toList
+    DbSession.contentAccessor.postsByForumId.subIndex(forumId).entities().toList
   }
   
   def getAllByReplyToId(replyToId: String): List[Post] = {
-    DbSession.getContentAccessor().postsByReplyToId.subIndex(replyToId).entities().toList
+    DbSession.contentAccessor.postsByReplyToId.subIndex(replyToId).entities().toList
   }
   
   def getAllWithRepliesByForumId(forumId: String): List[Post] = {

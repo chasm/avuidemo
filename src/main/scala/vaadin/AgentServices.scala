@@ -51,7 +51,6 @@ class AgentServices extends Application with ApplicationContext.TransactionListe
     var main = new AgentLoginWindow()
     main.center()
     setMainWindow(main)
-    // setMainWindow(new AgentWindow())
   }
 
   def transactionStart(application: Application, o: Object) {
@@ -78,6 +77,9 @@ class AgentServices extends Application with ApplicationContext.TransactionListe
           currentExpiration = Some(new Date().getTime + AgentServices.loginExpires)
           println("Login successfull for " + userId)
           loadProtectedResources()
+          println("listenForCnxnRequests! agent:" + u.id)
+          val ac = new AgentConnector()
+          ac.listenForCnxnRequests("agent:" + u.id)
         case _ =>
           println("Login failure for " + userId)
           currentUser = None

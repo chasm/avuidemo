@@ -27,11 +27,11 @@ object CopsContainer {
 }
 
 object CopsTable {
-  val ActionMark = new Action("Mark")
-  val ActionUnmark = new Action("Unmark")
-  val ActionLog = new Action("Save")
-  val ActionsUnmarked: Array[Action] = Array( ActionMark, ActionLog )
-  val ActionsMarked: Array[Action] = Array( ActionUnmark, ActionLog )
+  val ActionOpen = new Action("Open")
+  val ActionEditAlias = new Action("Edit Alias")
+  val ActionEdit = new Action("Edit")
+  val ActionDelete = new Action("Delete")
+  val Actions: Array[Action] = Array( ActionOpen, ActionEditAlias, ActionEdit, ActionDelete )
 }
 
 class CopsTable(tabsheet: TabSheet) extends VerticalLayout with ClickListener {
@@ -40,8 +40,6 @@ class CopsTable(tabsheet: TabSheet) extends VerticalLayout with ClickListener {
   setSpacing(true)
 
   val table = new Table()
-
-  val markedRows: HashSet[AnyRef] = new HashSet()
 
   table.addStyleName("striped")
 
@@ -77,36 +75,65 @@ class CopsTable(tabsheet: TabSheet) extends VerticalLayout with ClickListener {
 
   table.addActionHandler(new Action.Handler() {
     def getActions(target: AnyRef, sender: AnyRef): Array[Action] = {
-      if (markedRows.contains(target)) {
-        Array(CopsTable.ActionMark)
-      } else {
-        Array(CopsTable.ActionUnmark)
-      }
+      CopsTable.Actions
     }
 
     def handleAction(action: Action, sender: AnyRef, target: AnyRef) {
       action match {
-        case mark if mark == CopsTable.ActionMark =>
-          markedRows.add(target)
-          table.requestRepaint()
-        case unmark if unmark == CopsTable.ActionUnmark =>
-          markedRows.remove(target)
-          table.requestRepaint()
+        case open if open == CopsTable.ActionOpen =>
+          val value = container.getItem(target)
+          if (value != null) {
+            val cop: Cop = value.getBean().asInstanceOf[Cop]
+            val tab: ForumTabSheet = new ForumTabSheet(cop.getId())
+            tabsheet.addStyleName("borderless")
+            tabsheet.addTab(tab, cop.getName(), null).setClosable(true)
+            tabsheet.setSelectedTab(tab)
+          }
+        case editAlias if editAlias == CopsTable.ActionEditAlias =>  
+          getWindow().showNotification("Edit Alias", "Edit this dude's alias.", Notification.TYPE_TRAY_NOTIFICATION)
+        case edit if edit == CopsTable.ActionEdit =>
+          getWindow().showNotification("Edit", "Edit the cop.", Notification.TYPE_TRAY_NOTIFICATION)
+        case delete if delete == CopsTable.ActionDelete =>
+          getWindow().addWindow(new ConfirmDeletionWindow(table, target))
         case _ =>
+          getWindow().showNotification("Menu Item Selected", "Unknown action.", Notification.TYPE_TRAY_NOTIFICATION)
       }
     }
   })
   
-  table.addListener(new Property.ValueChangeListener() {
-    def valueChange(event: ValueChangeEvent) {
-      val value = event.getProperty().getValue()
-      if (value != null) {
-        val cop: Cop = value.asInstanceOf[Cop]
-        val tab: ForumTabSheet = new ForumTabSheet(cop.getId())
-        tabsheet.addStyleName("borderless")
-        tabsheet.addTab(tab, cop.getName(), null).setClosable(true)
-        tabsheet.setSelectedTab(tab)
+  private class ConfirmDeletionWindow(table: Table, itemId: AnyRef) extends Window with ClickListener {
+    setWidth("360px")
+    setHeight("144px")
+    setCaption("Are you sure?")
+    center()
+    
+    val lbl = new Label("This action will delete this community of practice. Once deleted, communities are not recoverable.")
+      
+    val delete = new Button("Delete", this.asInstanceOf[ClickListener])
+    val cancel = new Button("Cancel", this.asInstanceOf[ClickListener])
+    
+    val hl = new HorizontalLayout()
+    hl.setSizeUndefined()
+    hl.setMargin(true)
+    hl.setSpacing(true)
+    hl.addComponent(delete)
+    hl.addComponent(cancel)
+    
+    val layout = getContent().asInstanceOf[VerticalLayout]
+    layout.setSizeFull()
+    layout.setMargin(true)
+    layout.setSpacing(true)
+    layout.addComponent(lbl)
+    layout.addComponent(hl)
+    layout.setExpandRatio(lbl, 1.0f)
+
+    def buttonClick(event: Button#ClickEvent) {
+      event.getButton() match {
+        case d if (d == delete) => 
+          table.removeItem(itemId)
+          close()
+        case _ => close()
       }
     }
-  })
+  }
 }

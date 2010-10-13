@@ -30,7 +30,6 @@ class AgentLoginForm(code: String) extends FormLayout {
   private val password = new TextField("Password")
   password.setWidth("260px")
   password.setSecret(true)
-  password.setValue("betwixt")                          // DELETE THIS!
   
   setSpacing(true)
 

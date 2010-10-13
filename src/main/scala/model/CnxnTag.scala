@@ -39,10 +39,10 @@ class CnxnTag(ii: String, tn: String) {
 
 object CnxnTagDAO {
   
-  def put(cnxnTag: CnxnTag) = DbSession.getContentAccessor().cnxnTagsById.put(cnxnTag)
+  def put(cnxnTag: CnxnTag) = DbSession.contentAccessor.cnxnTagsById.put(cnxnTag)
   
   def put(cnxnTags: List[CnxnTag]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     
     cnxnTags.map(it => {
       ca.cnxnTagsById.put(it)
@@ -50,14 +50,14 @@ object CnxnTagDAO {
   }
   
   def getAll(): List[CnxnTag] = {
-    DbSession.getContentAccessor().cnxnTagsById.entities().toList
+    DbSession.contentAccessor.cnxnTagsById.entities().toList
   }
   
   def getAllByCnxnId(cnxnId: String): List[CnxnTag] = {
-    DbSession.getContentAccessor().cnxnTagsByCnxnId.subIndex(cnxnId).entities().toList
+    DbSession.contentAccessor.cnxnTagsByCnxnId.subIndex(cnxnId).entities().toList
   }
   
   def getAllByTagName(tagName: String): List[CnxnTag] = {
-    DbSession.getContentAccessor().cnxnTagsByTagName.subIndex(tagName).entities().toList
+    DbSession.contentAccessor.cnxnTagsByTagName.subIndex(tagName).entities().toList
   }
 }

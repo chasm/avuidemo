@@ -38,10 +38,10 @@ class ContentTag(n: String, a: String) extends java.lang.Comparable[ContentTag] 
 
 object ContentTagDAO {
   
-  def put(contentTag: ContentTag) = DbSession.getContentAccessor().contentTagsByName.put(contentTag)
+  def put(contentTag: ContentTag) = DbSession.contentAccessor.contentTagsByName.put(contentTag)
   
   def put(contentTags: List[ContentTag]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     
     contentTags.map(ct => {
       ca.contentTagsByName.put(ct)
@@ -49,7 +49,7 @@ object ContentTagDAO {
   }
   
   def get(name: String): Option[ContentTag] = {
-    DbSession.getContentAccessor().contentTagsByName.get(name) match {
+    DbSession.contentAccessor.contentTagsByName.get(name) match {
       case null => None
       case i => Some(i)
     }
@@ -60,11 +60,11 @@ object ContentTagDAO {
   }
   
   def getAll(): List[ContentTag] = {
-    DbSession.getContentAccessor().contentTagsByName.entities().toList
+    DbSession.contentAccessor.contentTagsByName.entities().toList
   }
   
   def getByAbbr(abbr: String): Option[ContentTag] = {
-    DbSession.getContentAccessor().contentTagsByAbbr.get(abbr) match {
+    DbSession.contentAccessor.contentTagsByAbbr.get(abbr) match {
       case null => None
       case i => Some(i)
     }

@@ -50,7 +50,7 @@ object AgentCnxnDAO {
    *
    * @param agentCnxn The AgentCnxn to save or update
    */
-  def put(agentCnxn: AgentCnxn) = DbSession.getContentAccessor().agentCnxnsById.put(agentCnxn)
+  def put(agentCnxn: AgentCnxn) = DbSession.contentAccessor.agentCnxnsById.put(agentCnxn)
   
   /**
    * Save or update a list of AgentCnxns
@@ -58,7 +58,7 @@ object AgentCnxnDAO {
    * @param agentCnxns The List[AgentCnxn] to save or update
    */
   def put(agentCnxns: List[AgentCnxn]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     
     agentCnxns.map(ac => {
       ca.agentCnxnsById.put(ac)
@@ -72,7 +72,7 @@ object AgentCnxnDAO {
    * @return Some(AgentCnxn) or None
    */
   def get(id: String): Option[AgentCnxn] = {
-    DbSession.getContentAccessor().agentCnxnsById.get(id) match {
+    DbSession.contentAccessor.agentCnxnsById.get(id) match {
       case null => None
       case i => Some(i)
     }
@@ -84,7 +84,7 @@ object AgentCnxnDAO {
    * @return A List of AgentCnxns
    */
   def getAll(): List[AgentCnxn] = {
-    DbSession.getContentAccessor().agentCnxnsById.entities().toList
+    DbSession.contentAccessor.agentCnxnsById.entities().toList
   }
   
   /**
@@ -94,13 +94,13 @@ object AgentCnxnDAO {
    * @return A List of AgentCnxns
    */
   def getAllByUserId(userId: String): List[AgentCnxn] = {
-    DbSession.getContentAccessor().agentCnxnsByRightId.subIndex(userId).entities().toList.map(ac => {
+    DbSession.contentAccessor.agentCnxnsByRightId.subIndex(userId).entities().toList.map(ac => {
       val lid = ac.getLeftId()
       val rid = ac.getRightId()
       ac.setLeftId(rid)
       ac.setRightId(lid)
       ac
-    }) ::: DbSession.getContentAccessor().agentCnxnsByLeftId.subIndex(userId).entities().toList
+    }) ::: DbSession.contentAccessor.agentCnxnsByLeftId.subIndex(userId).entities().toList
   }
   
   /**
@@ -110,7 +110,7 @@ object AgentCnxnDAO {
    * @return A List of AgentCnxns
    */
   def getAllByLeftId(leftId: String): List[AgentCnxn] = {
-    DbSession.getContentAccessor().agentCnxnsByLeftId.subIndex(leftId).entities().toList
+    DbSession.contentAccessor.agentCnxnsByLeftId.subIndex(leftId).entities().toList
   }
   
   /**
@@ -120,7 +120,7 @@ object AgentCnxnDAO {
    * @return A List of AgentCnxns
    */
   def getAllByRightId(rightId: String): List[AgentCnxn] = {
-    DbSession.getContentAccessor().agentCnxnsByRightId.subIndex(rightId).entities().toList
+    DbSession.contentAccessor.agentCnxnsByRightId.subIndex(rightId).entities().toList
   }
   
   /**
@@ -130,6 +130,6 @@ object AgentCnxnDAO {
    * @return A List of AgentCnxns
    */
   def getAllByTagName(tagName: String): List[AgentCnxn] = {
-    DbSession.getContentAccessor().agentCnxnsByTagName.subIndex(tagName).entities().toList
+    DbSession.contentAccessor.agentCnxnsByTagName.subIndex(tagName).entities().toList
   }
 }

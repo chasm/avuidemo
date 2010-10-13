@@ -14,14 +14,26 @@ import java.util.Locale._
 import java.text.DateFormat._
 
 @Entity
-class Forum(ci: String, ui: String, n: String, d: String, ms: ListSet[String]) {
+class Forum(uuid: String, ci: String, ui: String, n: String, d: String, ms: ListSet[String]) {
   
   def this() = {
-    this("","","","",ListSet.empty)
+    this("","","","","",ListSet.empty)
+  }
+  
+  def this(uuid: String) = {
+    this(uuid,"","","","",ListSet.empty)
+  }
+  
+  def this(ci: String, ui: String, n: String, d: String, ms: ListSet[String]) = {
+    this("",ci,ui,n,d,ms)
   }
   
   @PrimaryKey
-  val id: String = UUID.randomUUID.toString
+  val id: String = try {
+    UUID.fromString(uuid).toString
+  } catch {
+    case _ => UUID.randomUUID.toString
+  }
   
   @SecondaryKey(relate=MANY_TO_ONE, relatedEntity=classOf[Cop], onRelatedEntityDelete=ABORT)
   var copId: String = ci
@@ -71,10 +83,10 @@ class Forum(ci: String, ui: String, n: String, d: String, ms: ListSet[String]) {
 
 object ForumDAO {
   
-  def put(forum: Forum) = DbSession.getContentAccessor().foraById.put(forum)
+  def put(forum: Forum) = DbSession.contentAccessor.foraById.put(forum)
   
   def put(fora: List[Forum]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     
     fora.map(f => {
       ca.foraById.put(f)
@@ -82,37 +94,37 @@ object ForumDAO {
   }
   
   def get(id: String): Option[Forum] = {
-    DbSession.getContentAccessor().foraById.get(id) match {
+    DbSession.contentAccessor.foraById.get(id) match {
       case null => None
       case i => Some(i)
     }
   }
   
   def getAll(): List[Forum] = {
-    DbSession.getContentAccessor().foraById.entities().toList
+    DbSession.contentAccessor.foraById.entities().toList
   }
   
   def getAllByCopId(copId: String): List[Forum] = {
-    DbSession.getContentAccessor().foraByCopId.subIndex(copId).entities().toList
+    DbSession.contentAccessor.foraByCopId.subIndex(copId).entities().toList
   }
   
   def getAllByUserId(userId: String): List[Forum] = {
-    DbSession.getContentAccessor().foraByUserId.subIndex(userId).entities().toList
+    DbSession.contentAccessor.foraByUserId.subIndex(userId).entities().toList
   }
   
   def getAllByName(name: String): List[Forum] = {
-    DbSession.getContentAccessor().foraByName.subIndex(name).entities().toList
+    DbSession.contentAccessor.foraByName.subIndex(name).entities().toList
   }
   
   def getAllByIsActive(isActive: Boolean): List[Forum] = {
-    DbSession.getContentAccessor().foraByIsActive.subIndex(isActive).entities().toList
+    DbSession.contentAccessor.foraByIsActive.subIndex(isActive).entities().toList
   }
   
   def getAllByCopIdAndIsActive(copId: String, isActive: Boolean): List[Forum] = {
-    val join = new EntityJoin(DbSession.getContentAccessor().foraById)
+    val join = new EntityJoin(DbSession.contentAccessor.foraById)
     
-    join.addCondition(DbSession.getContentAccessor().foraByCopId, copId)
-    join.addCondition(DbSession.getContentAccessor().foraByIsActive, isActive)
+    join.addCondition(DbSession.contentAccessor.foraByCopId, copId)
+    join.addCondition(DbSession.contentAccessor.foraByIsActive, isActive)
     
     join.entities().toList
   }

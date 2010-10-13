@@ -91,11 +91,11 @@ object ContentItemDAO {
   
   def put(contentItem: ContentItem) = {
     println("VALUE: " + contentItem.getValue())
-    DbSession.getContentAccessor().contentItemsById.put(contentItem)
+    DbSession.contentAccessor.contentItemsById.put(contentItem)
   }
   
   def put(contentItems: List[ContentItem]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     
     contentItems.map(ci => {
       ca.contentItemsById.put(ci)
@@ -103,23 +103,23 @@ object ContentItemDAO {
   }
   
   def get(id: String): Option[ContentItem] = {
-    DbSession.getContentAccessor().contentItemsById.get(id) match {
+    DbSession.contentAccessor.contentItemsById.get(id) match {
       case null => None
       case i => Some(i)
     }
   }
   
   def getAll(): List[ContentItem] = {
-    DbSession.getContentAccessor().contentItemsById.entities().toList
+    DbSession.contentAccessor.contentItemsById.entities().toList
   }
   
   def getAllByUserId(userId: String): List[ContentItem] = {
-    DbSession.getContentAccessor().contentItemsByUser.subIndex(userId).entities().toList
+    DbSession.contentAccessor.contentItemsByUser.subIndex(userId).entities().toList
       .sorted(Ordering.fromLessThan[ContentItem](_.getPosition() < _.getPosition()))
   }
   
   def getAllByParentId(parentId: String): List[ContentItem] = {
-    DbSession.getContentAccessor().contentItemsByParent.subIndex(parentId).entities().toList
+    DbSession.contentAccessor.contentItemsByParent.subIndex(parentId).entities().toList
   }
   
   def getAllWithChildrenAndTagsByUserId(userId: String): List[ContentItem] = {
@@ -142,7 +142,7 @@ object ContentItemDAO {
   }
   
   def deleteById(id: String) {
-    DbSession.getContentAccessor().contentItemsById.delete(id)
+    DbSession.contentAccessor.contentItemsById.delete(id)
   }
   
   def delete(contentItem: ContentItem) {

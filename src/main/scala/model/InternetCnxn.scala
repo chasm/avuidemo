@@ -65,10 +65,10 @@ class InternetCnxn(ui: String, s: String, u: String, a: String, pw: String) {
 
 object InternetCnxnDAO {
   
-  def put(internetCnxn: InternetCnxn) = DbSession.getContentAccessor().internetCnxnsById.put(internetCnxn)
+  def put(internetCnxn: InternetCnxn) = DbSession.contentAccessor.internetCnxnsById.put(internetCnxn)
   
   def put(internetCnxns: List[InternetCnxn]) {
-    val ca = DbSession.getContentAccessor()
+    val ca = DbSession.contentAccessor
     
     internetCnxns.map(ic => {
       ca.internetCnxnsById.put(ic)
@@ -76,14 +76,14 @@ object InternetCnxnDAO {
   }
   
   def get(id: String): Option[InternetCnxn] = {
-    DbSession.getContentAccessor().internetCnxnsById.get(id) match {
+    DbSession.contentAccessor.internetCnxnsById.get(id) match {
       case null => None
       case i => Some(i)
     }
   }
   
   def getAll(): List[InternetCnxn] = {
-    DbSession.getContentAccessor().internetCnxnsById.entities().toList
+    DbSession.contentAccessor.internetCnxnsById.entities().toList
   }
   
   def getAllWithContentTagsByUserId(userId: String): List[InternetCnxn] = {
@@ -99,14 +99,14 @@ object InternetCnxnDAO {
   }
   
   def getAllByUserId(userId: String): List[InternetCnxn] = {
-    DbSession.getContentAccessor().internetCnxnsByUserId.subIndex(userId).entities().toList
+    DbSession.contentAccessor.internetCnxnsByUserId.subIndex(userId).entities().toList
   }
   
   def getAllBySite(site: String): List[InternetCnxn] = {
-    DbSession.getContentAccessor().internetCnxnsBySite.subIndex(site).entities().toList
+    DbSession.contentAccessor.internetCnxnsBySite.subIndex(site).entities().toList
   }
   
   def getAllByUri(uri: String): List[InternetCnxn] = {
-    DbSession.getContentAccessor().internetCnxnsByUri.subIndex(uri).entities().toList
+    DbSession.contentAccessor.internetCnxnsByUri.subIndex(uri).entities().toList
   }
 }

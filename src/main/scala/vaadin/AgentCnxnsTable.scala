@@ -14,6 +14,8 @@ import com.vaadin.ui.Button.ClickListener
 import scala.collection.mutable.HashSet
 import scala.collection.JavaConversions._
 
+import java.util.{Date, UUID}
+
 class AgentCnxnsContainer(val collection: java.util.Collection[AgentRelationship])
   extends BeanItemContainer[AgentRelationship](collection)
   
@@ -66,6 +68,23 @@ class NewAgentCnxnWindow(caption: String, val cnxn: Option[Item]) extends Window
   def buttonClick(event: Button#ClickEvent) {
     event.getButton() match {
       case s if (s == send) => 
+        for {
+          tag <- tags.getValue().asInstanceOf[java.util.Set[String]].toList
+          sourceId <- AgentServices.getInstance().getCurrentUserId()
+          c <- cnxn
+          targetId = c.getItemProperty("agentId").getValue().toString
+        } {
+          try {
+            UUID.fromString(targetId)
+            val ac = new AgentConnector()
+            ac.requestCnxn(
+              "agent:" + sourceId,
+              "agent:" + targetId,
+              tag
+            )
+          }
+        }
+
         getWindow().getParent().showNotification("Send this!", "New cnxn: " + cnxn.map(c => c.getItemProperty("agentId").getValue().toString) +
           " : " + tags.getValue().asInstanceOf[java.util.Set[String]].toList.mkString("; "), Notification.TYPE_TRAY_NOTIFICATION)
         getWindow().getParent().removeWindow(getWindow())
@@ -85,15 +104,12 @@ class AgentCnxnsTable extends VerticalLayout {
 
   val table = new Table()
 
-  val markedRows: HashSet[AnyRef] = new HashSet()
-
   addComponent(table)
 
   table.addStyleName("borderless")
   table.addStyleName("striped")
 
   table.setWidth("100%")
-  // table.setHeight("250px")
 
   table.setSelectable(true)
   table.setMultiSelect(true)
