@@ -110,10 +110,27 @@ class NewContentWindow(tree: ContentTree, parentItemId: AnyRef)
     case None => setCaption("Add item")
   }
   
-  val tagsLbl = new Label("Relationships")
+  // val tagContainer = LabelTreeContainer.load(
+  //   AgentServices.getInstance().getCurrentUserId().getOrElse("none")
+  // )
+  // 
+  // val tags = new LabelTree(tagContainer)
+  // 
+  // val tagPanel = new Panel()
+  // val vl = tagPanel.getContent().asInstanceOf[VerticalLayout]
+  // tagPanel.setWidth("240px")
+  // tagPanel.setHeight("240px")
+  // vl.setSizeUndefined()
+  // vl.setMargin(true)
+  // vl.setSpacing(true)
+  // vl.addComponent(tags)
+  
+  val tagsLbl = new Label("Tags")
   tagsLbl.setWidth("80px")
   
-  val tagContainer = ContentTagContainer.load(AgentServices.getInstance().getCurrentUserId().getOrElse("none")).getOrElse(new ContentTagContainer(List()))
+  val tagContainer = ContentTagContainer.load(
+    AgentServices.getInstance().getCurrentUserId().getOrElse("none")
+  ).getOrElse(new ContentTagContainer(List()))
   
   var tags = new ListSelect()
   tags.setWidth("180px")
@@ -160,7 +177,8 @@ class NewContentWindow(tree: ContentTree, parentItemId: AnyRef)
         val objId = obj.getId()
         val itemId = tree.addItem()
         val item = tree.getItem(itemId)
-        val newTags = tags.getValue().asInstanceOf[java.util.Set[String]].toList
+        val ts = tags.getValue().asInstanceOf[java.util.Set[String]].toList
+        val newTags = ContentTagDAO.getByNamesByUserId(ts, AgentServices.getInstance().getCurrentUserId().getOrElse("none"))
         
         item.getItemProperty("id").setValue( obj.getId() )
         obj.setUserId( AgentServices.getInstance().getCurrentUserId().getOrElse("") )
@@ -203,10 +221,10 @@ class NewContentWindow(tree: ContentTree, parentItemId: AnyRef)
         ContentItemDAO.put(obj)
         tree.objMap += (itemId -> obj)
         ItemTagDAO.put(newTags.map(t => {
-          new ItemTag(objId, t)
+          new ItemTag(objId, t.getId())
         }))
         
-        val newCTs = ContentTagDAO.getByNamesByUserId(newTags, obj.getUserId())
+        val newCTs = ContentTagDAO.getByNamesByUserId(newTags.map(_.getName()), obj.getUserId())
         obj.setTags( newCTs )
         item.getItemProperty("tags").setValue(obj.getTags().toList)
         item.getItemProperty("tagLabel").setValue(new Label(obj.getTagsAsHTML(), Label.CONTENT_XHTML))
@@ -232,7 +250,22 @@ class EditContentWindow(tree: ContentTree, item: Item, itemId: AnyRef, obj: Cont
   name.setMaxLength(32)
   setCaption("Edit " + name.getValue().asInstanceOf[String])
   
-  val tagsLbl = new Label("Relationships")
+  // val tagContainer = LabelTreeContainer.load(
+  //   AgentServices.getInstance().getCurrentUserId().getOrElse("none")
+  // )
+  // 
+  // val tags = new LabelTree(tagContainer)
+  // 
+  // val tagPanel = new Panel()
+  // val vl = tagPanel.getContent().asInstanceOf[VerticalLayout]
+  // tagPanel.setWidth("240px")
+  // tagPanel.setHeight("240px")
+  // vl.setSizeUndefined()
+  // vl.setMargin(true)
+  // vl.setSpacing(true)
+  // vl.addComponent(tags)
+  
+  val tagsLbl = new Label("Tags")
   nameLbl.setWidth("80px")
   
   val tagContainer = ContentTagContainer.load(AgentServices.getInstance().getCurrentUserId().getOrElse("none")).getOrElse(new ContentTagContainer(List()))
@@ -277,7 +310,8 @@ class EditContentWindow(tree: ContentTree, item: Item, itemId: AnyRef, obj: Cont
     event.getButton() match {
       case u if (u == update) => 
         val thisId = item.getItemProperty("id").getValue().asInstanceOf[String]
-        val newTags = tags.getValue().asInstanceOf[java.util.Set[String]].toList
+        val ts = tags.getValue().asInstanceOf[java.util.Set[String]].toList
+        val newTags = ContentTagDAO.getByNamesByUserId(ts, AgentServices.getInstance().getCurrentUserId().getOrElse("none"))
         val thisItem = ContentItemDAO.get(thisId).map(x => {
           x.setUserId( item.getItemProperty("userId").getValue().asInstanceOf[String] )
           x.setParentId( item.getItemProperty("parentId").getValue().asInstanceOf[String] )
@@ -294,10 +328,10 @@ class EditContentWindow(tree: ContentTree, item: Item, itemId: AnyRef, obj: Cont
           val id = x.getId()
           ItemTagDAO.delete(ItemTagDAO.getAllByItemId(id))
           ItemTagDAO.put(newTags.map(t => {
-            new ItemTag(id, t)
+            new ItemTag(id, t.getId())
           }))
           
-          val newCTs = ContentTagDAO.getByNamesByUserId(newTags, x.getUserId())
+          val newCTs = ContentTagDAO.getByNamesByUserId(newTags.map(_.getName()), x.getUserId())
           x.setTags( newCTs )
           item.getItemProperty("tags").setValue(x.getTags().toList)
           item.getItemProperty("tagLabel").setValue(new Label(x.getTagsAsHTML(), Label.CONTENT_XHTML))

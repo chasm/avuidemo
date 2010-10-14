@@ -27,7 +27,7 @@ class LabelTree(container: HierarchicalContainer) extends VerticalLayout {
   setSpacing(false)
   setWidth("100%")
 
-  val tree = new Tree("Relationships")
+  val tree = new Tree("Tags")
   tree.setImmediate(true)
   tree.setItemCaptionPropertyId("name")
   tree.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY)

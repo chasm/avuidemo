@@ -59,8 +59,8 @@ class LabelPane extends VerticalLayout with Property.ValueChangeListener {
 class NewLabelWindow(tree: LabelTreeTable, parentItemId: AnyRef)
     extends Window with ClickListener {
   
-  setWidth("300px")
-  setHeight("320px")
+  setWidth("240px")
+  setHeight("200px")
   center()
   
   val parent = parentItemId match {
@@ -72,8 +72,8 @@ class NewLabelWindow(tree: LabelTreeTable, parentItemId: AnyRef)
   }
   
   parent match {
-    case Some(p) => setCaption("Add item below " + p.getItemProperty("name").getValue().asInstanceOf[String])
-    case None => setCaption("Add item")
+    case Some(p) => setCaption("Add tag under " + p.getItemProperty("name").getValue().asInstanceOf[String])
+    case None => setCaption("Add tag")
   }
   
   val name = new TextField("Name")

@@ -61,7 +61,7 @@ class ContentTree(objs: List[ContentItem]) extends TreeTable {
   setColumnHeaderMode(Table.COLUMN_HEADER_MODE_EXPLICIT)
   setColumnHeader("name", "Label")
   setColumnHeader("valueLabel", "Content")
-  setColumnHeader("tagLabel", "Relationships")
+  setColumnHeader("tagLabel", "Tags")
   setColumnAlignment("tagLabel", Table.ALIGN_RIGHT)
   
   // Expand all nodes
@@ -258,6 +258,7 @@ class ContentTree(objs: List[ContentItem]) extends TreeTable {
   def addContentItems(objs: List[ContentItem], parentId: AnyRef) {
     objs.map(obj => {
       val itemId = this.addItem()
+      println("Adding content item " + obj.getName() + " with tags " + obj.getTags().toList.mkString("; "))
       this.objMap += (itemId -> obj)
       this.getContainerProperty(itemId, "id").setValue(obj.getId())
       this.getContainerProperty(itemId, "userId").setValue(obj.getUserId())

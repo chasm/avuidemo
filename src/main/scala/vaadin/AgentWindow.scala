@@ -74,7 +74,7 @@ class AgentWindow(caption: String) extends Window(caption) {
     // Add the tabs to the tabsheet
     addTab(connectionManager, "Connections", null)
     addTab(contentManager, "Content", null)
-    addTab(labelManager, "Labels", null)
+    addTab(labelManager, "Tags", null)
     addTab(copManager, "Communities", null)
     addTab(introductionManager, "Introductions", null)
     addTab(invitationManager, "Invitations", null).setVisible(AgentServices.getInstance().isSuperuser())

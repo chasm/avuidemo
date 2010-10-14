@@ -48,7 +48,7 @@ class ReplyForm(post: Post, parent: PostDisplay, parentId: AnyRef)
   
   val body = new TinyMCETextField()
   body.setWidth("100%")
-  body.setHeight("460px")
+  body.setHeight("240px")
   
   val btnBar = new HorizontalLayout()
   btnBar.setHeight("72px")

@@ -56,8 +56,11 @@ class InternetCnxnsTable extends VerticalLayout {
     table.setContainerDataSource(c)
     table.addGeneratedColumn("tags", new TagColumnGenerator())
     table.setVisibleColumns(List("id", "site", "uri", "alias", "tags").toArray)
-    table.setColumnHeaders(List("ID", "Site", "URI", "Alias", "Relationships").toArray)
-    table.setColumnExpandRatio("alias", 1)
+    table.setColumnHeaders(List("ID", "Site", "URI", "Alias", "Tags").toArray)
+    table.setColumnExpandRatio("site", 0.2f)
+    table.setColumnExpandRatio("uri", 0.25f)
+    table.setColumnExpandRatio("alias", 0.25f)
+    table.setColumnExpandRatio("tags", 0.3f)
     table.setColumnCollapsed("id", true)
   })
 
@@ -69,9 +72,9 @@ class InternetCnxnsTable extends VerticalLayout {
     def handleAction(action: Action, sender: AnyRef, target: AnyRef) {
       action match {
         case edit if edit == InternetCnxnsTable.ActionEdit =>
-          getWindow().showNotification("Edit Cop", "Edit this cop.", Notification.TYPE_TRAY_NOTIFICATION)
+          getWindow().showNotification("Coming Soon!", "Edit this Internet Connection.", Notification.TYPE_TRAY_NOTIFICATION)
         case remove if remove == InternetCnxnsTable.ActionRemove =>
-          getWindow().showNotification("Remove Cop", "Remove this cop.", Notification.TYPE_TRAY_NOTIFICATION)
+          getWindow().showNotification("Coming Soon!", "Delete this Internet Connection.", Notification.TYPE_TRAY_NOTIFICATION)
         case _ =>
           getWindow().showNotification("Error", "Unrecognized action.", Notification.TYPE_TRAY_NOTIFICATION)
       }
@@ -91,7 +94,7 @@ class InternetCnxnsTable extends VerticalLayout {
     name.setMaxLength(32)
     setCaption("Edit " + name.getValue().asInstanceOf[String])
 
-    val tagsLbl = new Label("Relationships")
+    val tagsLbl = new Label("Tags")
     nameLbl.setWidth("80px")
 
     val tagContainer = ContentTagContainer.load(AgentServices.getInstance().getCurrentUserId().getOrElse("none")).getOrElse(new ContentTagContainer(List()))
@@ -136,7 +139,8 @@ class InternetCnxnsTable extends VerticalLayout {
       event.getButton() match {
         case u if (u == update) => 
           val thisId = item.getItemProperty("id").getValue().asInstanceOf[String]
-          val newTags = tags.getValue().asInstanceOf[java.util.Set[String]].toList
+          val ts = tags.getValue().asInstanceOf[java.util.Set[String]].toList
+          val newTags = ContentTagDAO.getByNamesByUserId(ts, AgentServices.getInstance().getCurrentUserId().getOrElse("none"))
           val thisItem = ContentItemDAO.get(thisId).map(x => {
             x.setUserId( item.getItemProperty("userId").getValue().asInstanceOf[String] )
             x.setParentId( item.getItemProperty("parentId").getValue().asInstanceOf[String] )
@@ -153,10 +157,10 @@ class InternetCnxnsTable extends VerticalLayout {
             val id = x.getId()
             ItemTagDAO.delete(ItemTagDAO.getAllByItemId(id))
             ItemTagDAO.put(newTags.map(t => {
-              new ItemTag(id, t)
+              new ItemTag(id, t.getId())
             }))
 
-            val newCTs = ContentTagDAO.getByNamesByUserId(newTags, x.getUserId())
+            val newCTs = ContentTagDAO.getByNamesByUserId(newTags.map(_.getName()), x.getUserId())
             x.setTags( newCTs )
             item.getItemProperty("tags").setValue(x.getTags().toList)
             item.getItemProperty("tagLabel").setValue(new Label(x.getTagsAsHTML(), Label.CONTENT_XHTML))

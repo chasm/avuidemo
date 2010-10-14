@@ -148,13 +148,16 @@ case class ContentTag(ui: String, pi: String, n: String, a: String, p: Int, f: I
 
 object ContentTagDAO {
   
-  def put(contentTag: ContentTag) = DbSession.contentAccessor.contentTagsById.put(contentTag)
+  def put(contentTag: ContentTag) = {
+    println("Putting ContentTag with name " + contentTag.getName() + ".")
+    DbSession.contentAccessor.contentTagsById.put(contentTag)
+  }
   
   def put(contentTags: List[ContentTag]) {
     val ca = DbSession.contentAccessor
     
     contentTags.map(ct => {
-      ca.contentTagsById.put(ct)
+      put(ct)
     })
   }
   

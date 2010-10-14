@@ -25,8 +25,9 @@ class ConnectionManager extends HorizontalLayout with Fragmented {
   setMargin(true)
   setWidth("100%")
   
-  val lpanel = new Panel("Left Column")
+  val lpanel = new Panel("Messages")
   lpanel.setWidth("100%")
+  lpanel.addComponent(new Label("You have no new messages."))
   
   val colLeft = new VerticalLayout()
   colLeft.setWidth("100%")
@@ -51,8 +52,9 @@ class ConnectionManager extends HorizontalLayout with Fragmented {
   colCenter.addComponent(acpanel)
   addComponent(colCenter)
   
-  val rpanel = new Panel("Right Column")
+  val rpanel = new Panel("Pending Requests")
   rpanel.setWidth("100%")
+  rpanel.addComponent(new Label("You have no new pending requests."))
   
   val colRight = new VerticalLayout
   colRight.setWidth("100%")

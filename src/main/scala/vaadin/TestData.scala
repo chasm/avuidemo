@@ -56,14 +56,20 @@ object TestData {
       ContentTagDAO.put(tagMap.toList.map(x => x._2))
     
       // InternetCnxns
-      val su_none = new InternetCnxn(su.getId(), "EACoP", "http://nonebetwixt.com/", "treasure_hunter", "secret")
-      val u1_none = new InternetCnxn(u1.getId(), "EACoP", "http://nonebetwixt.com/", "tallman", "secret")
-      val u2_none = new InternetCnxn(u2.getId(), "EACoP", "http://nonebetwixt.com/", "old_grizzly", "secret")
-      val u3_none = new InternetCnxn(u3.getId(), "EACoP", "http://nonebetwixt.com/", "secret_chair", "secret")
-      val u4_none = new InternetCnxn(u4.getId(), "EACoP", "http://nonebetwixt.com/", "back_pain", "secret")
-      val u5_none = new InternetCnxn(u5.getId(), "EACoP", "http://nonebetwixt.com/", "hope_for_change", "secret")
+      val su_li = new InternetCnxn(su.getId(), "LinkedIn", "http://linkedin.com/", "treasure_hunter", "secret")
+      val u1_li = new InternetCnxn(u1.getId(), "LinkedIn", "http://linkedin.com/", "tallman", "secret")
+      val u2_li = new InternetCnxn(u2.getId(), "LinkedIn", "http://linkedin.com/", "old_grizzly", "secret")
+      val u3_li = new InternetCnxn(u3.getId(), "LinkedIn", "http://linkedin.com/", "secret_chair", "secret")
+      val u4_li = new InternetCnxn(u4.getId(), "LinkedIn", "http://linkedin.com/", "back_pain", "secret")
+      val u5_li = new InternetCnxn(u5.getId(), "LinkedIn", "http://linkedin.com/", "hope_for_change", "secret")
+      val su_fb = new InternetCnxn(su.getId(), "Facebook", "http://facebook.com/", "jonesing", "secret")
+      val u1_fb = new InternetCnxn(u1.getId(), "Facebook", "http://facebook.com/", "big_beard", "secret")
+      val u2_fb = new InternetCnxn(u2.getId(), "Facebook", "http://facebook.com/", "rough_rider", "secret")
+      val u3_fb = new InternetCnxn(u3.getId(), "Facebook", "http://facebook.com/", "martinerizer", "secret")
+      val u4_fb = new InternetCnxn(u4.getId(), "Facebook", "http://facebook.com/", "monrover", "secret")
+      val u5_fb = new InternetCnxn(u5.getId(), "Facebook", "http://facebook.com/", "da_man", "secret")
       val icnxns: List[InternetCnxn] = List(
-        su_none, u1_none, u2_none, u3_none, u4_none, u5_none
+        su_li, u1_li, u2_li, u3_li, u4_li, u5_li, su_fb, u1_fb, u2_fb, u3_fb, u4_fb, u5_fb
       )
       InternetCnxnDAO.put(icnxns)
     
@@ -215,7 +221,7 @@ object TestData {
         )
         
         val iTags = List(
-          name_pa, pts_pa, hon_pa, given_co, given_aq, mid_tc, famn_co, suf_pa,
+          pInfo_pa, name_pa, pts_pa, hon_pa, given_co, given_aq, mid_tc, famn_co, suf_pa,
           leg_pa, fn_as, nn_tc, loc_pa, curmet_co, curloc_tc, curadd_as, strnum_as,
           strnam_as, strtyp_as, cit_as, stat_as, zip_as, pl4_as, cntry_pa
         )

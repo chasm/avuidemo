@@ -126,6 +126,7 @@ object ContentItemDAO {
   val cr: ContentRouter = new ContentRouter()
   
   def put(contentItem: ContentItem) = {
+    println("Putting ContentItems with name " + contentItem.getName() + " and tags " + contentItem.getTags().toList.mkString("","; ","."))
     DbSession.contentAccessor.contentItemsById.put(contentItem)
     contentItem.tags.toList.map(tag => {
       cr.putContent(contentItem.getUserId(), tag, contentItem)
@@ -164,6 +165,7 @@ object ContentItemDAO {
     var tags = ContentTagDAO.getAllByUserId(userId).map(ct => (ct.getId(), ct)).toMap
     var items = getAllByUserId(userId).map(ci => (ci.getId(), ci)).toMap
     val its = ItemTagDAO.getAll()
+
     its.map(it => {
       if (items.contains(it.getItemId())) {
         items(it.getItemId()).addTag(tags(it.getTagId()))
@@ -181,7 +183,7 @@ object ContentItemDAO {
   
   def getAllByUserIdAndTags(userId: String, tags: List[ContentTag]) = {
     var items = getAllWithChildrenAndTagsByUserId(userId)
-    println("\nITEMS: " + items.mkString("; ") + "\n")
+    
     dropHiddenContent(items, tags)
   }
   

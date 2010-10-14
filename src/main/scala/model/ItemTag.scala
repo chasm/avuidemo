@@ -39,13 +39,16 @@ class ItemTag(ii: String, ti: String) {
 
 object ItemTagDAO {
   
-  def put(itemTag: ItemTag) = DbSession.contentAccessor.itemTagsById.put(itemTag)
+  def put(itemTag: ItemTag) = {
+    println("Putting ItemTag with itemId " + itemTag.getItemId() + " and tagId " + itemTag.getTagId() + ".")
+    DbSession.contentAccessor.itemTagsById.put(itemTag)
+  }
   
   def put(itemTags: List[ItemTag]) {
     val ca = DbSession.contentAccessor
     
     itemTags.map(it => {
-      ca.itemTagsById.put(it)
+      put(it)
     })
   }
   

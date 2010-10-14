@@ -40,40 +40,35 @@ class NewAgentCnxnWindow(caption: String, val cnxn: Option[Item]) extends Window
     AgentServices.getInstance().getCurrentUserId().getOrElse("none")
   )
   
-  // var tags = new ListSelect("Relationships", tagContainer)
-  // tags.setWidth("100%")
-  // tags.setRows(8)
-  // tags.setMultiSelect(true)
-  // tags.setNullSelectionAllowed(true)
-  // cnxn match {
-  //   case Some(c) => c.getItemProperty("tags").getValue().asInstanceOf[List[ContentTag]]
-  //   case None => 
-  // }
-  
   val tags = new LabelTree(tagContainer)
   
   val tagPanel = new Panel()
   val vl = tagPanel.getContent().asInstanceOf[VerticalLayout]
-  tagPanel.setWidth("100%")
+  tagPanel.setWidth("240px")
   tagPanel.setHeight("240px")
   vl.setSizeUndefined()
   vl.setMargin(true)
   vl.setSpacing(true)
   vl.addComponent(tags)
   
-  val message = new TextField("Message")
-  message.setRows(5)
-  message.setWidth("100%")
+  val message = new TextField()
+  message.setWidth("240px")
+  message.setHeight("240px")
   message.setInputPrompt("Type a personal message here.")
+  
+  val hl = new HorizontalLayout()
+  hl.setMargin(false)
+  hl.setSpacing(true)
+  hl.addComponent(tagPanel)
+  hl.addComponent(message)
   
   val send = new Button("Send", this.asInstanceOf[ClickListener])
   
   val layout = this.getContent().asInstanceOf[VerticalLayout]
-  layout.setWidth("240px")
+  layout.setWidth("480px")
   layout.setSpacing(true)
   layout.setMargin(true)
-  layout.addComponent(tagPanel)
-  layout.addComponent(message)
+  layout.addComponent(hl)
   layout.addComponent(send)
 
   def buttonClick(event: Button#ClickEvent) {
@@ -107,9 +102,9 @@ class NewAgentCnxnWindow(caption: String, val cnxn: Option[Item]) extends Window
                 )
               }
             }
-            getWindow().getParent().showNotification("Send this!", "New cnxn: " +
-              cnxn.map(c => c.getItemProperty("agentId").getValue().toString) +
-              " : " + tags.tree.getValue().asInstanceOf[java.util.Set[String]].toList.mkString("; "),
+            getWindow().getParent().showNotification("Request Sent", "You sent a request to change your relationship with " +
+              cnxn.map(c => c.getItemProperty("agentName").getValue().toString) +
+              " to " + tags.tree.getValue().asInstanceOf[java.util.Set[String]].toList.mkString("","; ",","),
               Notification.TYPE_TRAY_NOTIFICATION)
             getWindow().getParent().removeWindow(getWindow())
             
@@ -153,8 +148,9 @@ class AgentCnxnsTable extends VerticalLayout {
     table.setContainerDataSource(c)
     table.addGeneratedColumn("tagLabels", new TagColumnGenerator())
     table.setVisibleColumns(List("agentId", "agentName", "tagLabels").toArray)
-    table.setColumnHeaders(List("ID", "Agent", "Relationships").toArray)
-    table.setColumnExpandRatio("agentName", 1)
+    table.setColumnHeaders(List("ID", "Agent", "Tags").toArray)
+    table.setColumnExpandRatio("agentName", 0.6f)
+    table.setColumnExpandRatio("tagLabels", 0.4f)
     table.setColumnCollapsed("agentId", true)
   })
 
