@@ -20,13 +20,13 @@ class AgentRelationship(ai: String, an: String) {
   var agentName: String = an
   var tags: ListSet[ContentTag] = ListSet.empty
   
-  def getAgentId: String = this.agentId
+  def getAgentId(): String = this.agentId
   def setAgentId(ai: String) = { this.agentId = ai }
   
-  def getAgentName: String = this.agentName
+  def getAgentName(): String = this.agentName
   def setAgentName(an: String) = { this.agentName = an }
   
-  def getTags: List[ContentTag] = this.tags.toList
+  def getTags(): List[ContentTag] = this.tags.toList
   def setTags(ts: List[ContentTag]) = {
     this.tags = ListSet.empty
     ts.map(t => { this.tags += t })
@@ -38,16 +38,16 @@ class AgentRelationship(ai: String, an: String) {
 object AgentRelationshipDAO {
   
   def getAllByUserId(userId: String): List[AgentRelationship] = {
-    val tags = ContentTagDAO.getAll().map(t => (t.getName(), t)).toMap                 // map tagName to tag
+    val tags = ContentTagDAO.getAll().map(t => (t.getId(), t)).toMap                   // map tagId to tag
     val users = ContentUserDAO.getAll().map(u => (u.getId(), u.getName())).toMap       // map userId to user name
     val rels: HashMap[String,AgentRelationship] = HashMap.empty                        // empty hash map for agent relationships
     AgentCnxnDAO.getAllByUserId(userId).map(c => {
       val aId = c.getRightId()
       if (rels.contains(aId)) { 
-        rels(aId).tags += tags(c.getTagName())
+        rels(aId).tags += tags(c.getTagId())
       } else {
         val r = new AgentRelationship(aId, users(aId))
-        r.tags += tags(c.getTagName())
+        r.tags += tags(c.getTagId())
         rels += aId -> r
       }
     })

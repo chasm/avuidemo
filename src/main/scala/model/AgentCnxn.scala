@@ -11,7 +11,7 @@ import com.sleepycat.persist.{EntityCursor, EntityJoin}
 import java.util.{Date, UUID}
 
 @Entity
-class AgentCnxn(li: String, ri: String, tn: String) {
+class AgentCnxn(li: String, ri: String, ti: String) {
   
   def this() = {
     this("","","")
@@ -27,7 +27,7 @@ class AgentCnxn(li: String, ri: String, tn: String) {
   var rightId: String = ri
   
   @SecondaryKey(relate=MANY_TO_ONE, relatedEntity=classOf[ContentTag], onRelatedEntityDelete=CASCADE)
-  var tagName: String = tn
+  var tagId: String = ti
   
   def getId(): String = id
 
@@ -37,10 +37,10 @@ class AgentCnxn(li: String, ri: String, tn: String) {
   def getRightId(): String = this.rightId
   def setRightId(ri: String) = { this.rightId = ri }
 
-  def getTagName(): String = this.tagName
-  def setTagName(tn: String) = { this.tagName = tn }
+  def getTagId(): String = this.tagId
+  def setTagId(ti: String) = { this.tagId = ti }
   
-  override def toString(): String = this.leftId + " :: " + this.rightId + " (" + this.tagName + ")"
+  override def toString(): String = this.leftId + " :: " + this.rightId + " (" + this.tagId + ")"
 }
 
 object AgentCnxnDAO {
@@ -126,10 +126,10 @@ object AgentCnxnDAO {
   /**
    * Get a list of all AgentCnxns for a specific tag name
    *
-   * @param tagName The name of the ContentTag whose AgentCnxns will be retrieved
+   * @param tagId The ID of the ContentTag whose AgentCnxns will be retrieved
    * @return A List of AgentCnxns
    */
-  def getAllByTagName(tagName: String): List[AgentCnxn] = {
-    DbSession.contentAccessor.agentCnxnsByTagName.subIndex(tagName).entities().toList
+  def getAllByTagId(tagId: String): List[AgentCnxn] = {
+    DbSession.contentAccessor.agentCnxnsByTagId.subIndex(tagId).entities().toList
   }
 }

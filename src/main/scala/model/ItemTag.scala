@@ -11,7 +11,7 @@ import com.sleepycat.persist.{EntityCursor, EntityJoin}
 import java.util.{Date, UUID}
 
 @Entity
-class ItemTag(ii: String, tn: String) {
+class ItemTag(ii: String, ti: String) {
   
   def this() = {
     this("","")
@@ -24,17 +24,17 @@ class ItemTag(ii: String, tn: String) {
   var itemId: String = ii
 
   @SecondaryKey(relate=MANY_TO_ONE, relatedEntity=classOf[ContentTag], onRelatedEntityDelete=CASCADE)
-  var tagName: String = tn
+  var tagId: String = ti
   
   def getId(): String = id
 
   def getItemId(): String = this.itemId
   def setItemId(ii: String) = { this.itemId = ii}
 
-  def getTagName(): String = this.tagName
-  def setTagName(tn: String) = { this.tagName = tn}
+  def getTagId(): String = this.tagId
+  def setTagId(ti: String) = { this.tagId = ti}
   
-  override def toString(): String = this.itemId + " (" + this.tagName + ")"
+  override def toString(): String = this.itemId + " (" + this.tagId + ")"
 }
 
 object ItemTagDAO {
@@ -57,8 +57,8 @@ object ItemTagDAO {
     DbSession.contentAccessor.itemTagsByItemId.subIndex(itemId).entities().toList
   }
   
-  def getTagNamesByItemId(itemId: String): List[String] = {
-    getAllByItemId(itemId).map(_.tagName)
+  def getTagIdsByItemId(itemId: String): List[String] = {
+    getAllByItemId(itemId).map(_.tagId)
   }
   
   def deleteById(id: String) {

@@ -36,25 +36,35 @@ class NewAgentCnxnWindow(caption: String, val cnxn: Option[Item]) extends Window
   setSizeUndefined()
   center()
   
-  val tagsLbl = new Label("Relationships")
-  tagsLbl.setWidth("80px")
+  val tagContainer = LabelTreeContainer.load(
+    AgentServices.getInstance().getCurrentUserId().getOrElse("none")
+  )
   
-  val tagContainer = ContentTagContainer.load.getOrElse(new ContentTagContainer(List()))
+  // var tags = new ListSelect("Relationships", tagContainer)
+  // tags.setWidth("100%")
+  // tags.setRows(8)
+  // tags.setMultiSelect(true)
+  // tags.setNullSelectionAllowed(true)
+  // cnxn match {
+  //   case Some(c) => c.getItemProperty("tags").getValue().asInstanceOf[List[ContentTag]]
+  //   case None => 
+  // }
   
-  var tags = new ListSelect()
-  tags.setWidth("180px")
-  tags.setRows(8)
-  tags.setMultiSelect(true)
-  tags.setNullSelectionAllowed(true)
-  ContentTagDAO.getAll().map(ct => {
-    tags.addItem(ct.getName())
-  })
-  cnxn match {
-    case Some(c) => c.getItemProperty("tags").getValue().asInstanceOf[List[ContentTag]].map(t => {
-      tags.select(t.getName())
-    })
-    case None => tags.select("Public/Anyone")
-  }
+  val tags = new LabelTree(tagContainer)
+  
+  val tagPanel = new Panel()
+  val vl = tagPanel.getContent().asInstanceOf[VerticalLayout]
+  tagPanel.setWidth("100%")
+  tagPanel.setHeight("240px")
+  vl.setSizeUndefined()
+  vl.setMargin(true)
+  vl.setSpacing(true)
+  vl.addComponent(tags)
+  
+  val message = new TextField("Message")
+  message.setRows(5)
+  message.setWidth("100%")
+  message.setInputPrompt("Type a personal message here.")
   
   val send = new Button("Send", this.asInstanceOf[ClickListener])
   
@@ -62,32 +72,51 @@ class NewAgentCnxnWindow(caption: String, val cnxn: Option[Item]) extends Window
   layout.setWidth("240px")
   layout.setSpacing(true)
   layout.setMargin(true)
-  layout.addComponent(tags)
+  layout.addComponent(tagPanel)
+  layout.addComponent(message)
   layout.addComponent(send)
 
   def buttonClick(event: Button#ClickEvent) {
+    import Option.{apply => ?} 
+    
     event.getButton() match {
       case s if (s == send) => 
-        for {
-          tag <- tags.getValue().asInstanceOf[java.util.Set[String]].toList
-          sourceId <- AgentServices.getInstance().getCurrentUserId()
-          c <- cnxn
-          targetId = c.getItemProperty("agentId").getValue().toString
-        } {
-          try {
-            UUID.fromString(targetId)
-            val ac = new AgentConnector()
-            ac.requestCnxn(
-              "agent:" + sourceId,
-              "agent:" + targetId,
-              tag
-            )
-          }
+        ?(tags.tree.getValue()) match {
+          case Some(t) =>
+            for {
+              id <- t.asInstanceOf[java.util.Set[_]]
+              tag = tags.tree.getItem(id).getItemProperty("tag").getValue().asInstanceOf[ContentTag]
+              sourceId <- AgentServices.getInstance().getCurrentUserId()
+              c <- cnxn
+              targetId = c.getItemProperty("agentId").getValue().toString
+            } {
+              try {
+                UUID.fromString(targetId)
+                val ac = new AgentConnector()
+                ac.requestCnxn(
+                  "agent:" + sourceId,
+                  "agent:" + targetId,
+                  tag,
+                  message.getValue().toString,
+                  AgentServices.getInstance().getCurrentUser match {
+                    case Some(u) => u.getName()
+                    case None =>
+                      println("Oh, lawdy! We done broke it.")
+                      throw new Exception("Must be logged in to request connections.")
+                  }
+                )
+              }
+            }
+            getWindow().getParent().showNotification("Send this!", "New cnxn: " +
+              cnxn.map(c => c.getItemProperty("agentId").getValue().toString) +
+              " : " + tags.tree.getValue().asInstanceOf[java.util.Set[String]].toList.mkString("; "),
+              Notification.TYPE_TRAY_NOTIFICATION)
+            getWindow().getParent().removeWindow(getWindow())
+            
+          case None =>
+            getWindow().getParent().showNotification("No relationship", "A relationship must be selected.",
+            Notification.TYPE_TRAY_NOTIFICATION)
         }
-
-        getWindow().getParent().showNotification("Send this!", "New cnxn: " + cnxn.map(c => c.getItemProperty("agentId").getValue().toString) +
-          " : " + tags.getValue().asInstanceOf[java.util.Set[String]].toList.mkString("; "), Notification.TYPE_TRAY_NOTIFICATION)
-        getWindow().getParent().removeWindow(getWindow())
       case _ => 
         getWindow().getParent().removeWindow(getWindow())
     }
@@ -95,9 +124,10 @@ class NewAgentCnxnWindow(caption: String, val cnxn: Option[Item]) extends Window
 }
 
 object AgentCnxnsTable {
+  val ActionViewContent = new Action("View Content")
   val ActionEdit = new Action("Suggest New Relationship")
   val ActionDelete = new Action("Delete Connection")
-  val Actions: Array[Action] = Array( ActionEdit, ActionDelete )
+  val Actions: Array[Action] = Array( ActionViewContent, ActionEdit, ActionDelete )
 }
 
 class AgentCnxnsTable extends VerticalLayout {
@@ -117,11 +147,13 @@ class AgentCnxnsTable extends VerticalLayout {
   table.setColumnReorderingAllowed(true)
   table.setColumnCollapsingAllowed(true)
   
-  AgentCnxnsContainer.load.map(c => {
+  val optCon = AgentCnxnsContainer.load
+  
+  optCon.map(c => {
     table.setContainerDataSource(c)
-    table.addGeneratedColumn("tags", new TagColumnGenerator())
-    table.setVisibleColumns(List("agentId", "agentName", "tags").toArray)
-    table.setColumnHeaders(List("ID", "Agent", "Associations").toArray)
+    table.addGeneratedColumn("tagLabels", new TagColumnGenerator())
+    table.setVisibleColumns(List("agentId", "agentName", "tagLabels").toArray)
+    table.setColumnHeaders(List("ID", "Agent", "Relationships").toArray)
     table.setColumnExpandRatio("agentName", 1)
     table.setColumnCollapsed("agentId", true)
   })
@@ -133,6 +165,16 @@ class AgentCnxnsTable extends VerticalLayout {
 
     def handleAction(action: Action, sender: AnyRef, target: AnyRef) {
       action match {
+        case view if view == AgentCnxnsTable.ActionViewContent =>
+          getWindow().addWindow(new ContentWindow(
+            table.getItem(target).getItemProperty("agentName").toString + "'s Content",
+            table.getItem(target).getItemProperty("agentId").toString,
+            optCon match {
+              case Some(c) =>
+                c.getItem(target).getBean().getTags()
+              case None => Nil
+            }
+          ))
         case edit if edit == AgentCnxnsTable.ActionEdit =>
           getWindow().addWindow(new NewAgentCnxnWindow(Some(table.getItem(target))))
         case delete if delete == AgentCnxnsTable.ActionDelete =>

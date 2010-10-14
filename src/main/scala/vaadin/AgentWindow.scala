@@ -56,6 +56,7 @@ class AgentWindow(caption: String) extends Window(caption) {
     val introductionManager = new IntroductionManager()
     val connectionManager = new ConnectionManager()
     val contentManager = new ContentManager()
+    val labelManager = new LabelManager()
     val copManager = new CopManager()
     val accountManager = new AccountManager()
 
@@ -65,14 +66,16 @@ class AgentWindow(caption: String) extends Window(caption) {
       introductionManager.getFragment() -> introductionManager,
       connectionManager.getFragment() -> connectionManager,
       contentManager.getFragment() -> contentManager,
+      labelManager.getFragment() -> labelManager,
       copManager.getFragment() -> copManager,
       accountManager.getFragment() -> accountManager
     )
 
     // Add the tabs to the tabsheet
-    addTab(copManager, "Communities", null)
     addTab(connectionManager, "Connections", null)
     addTab(contentManager, "Content", null)
+    addTab(labelManager, "Labels", null)
+    addTab(copManager, "Communities", null)
     addTab(introductionManager, "Introductions", null)
     addTab(invitationManager, "Invitations", null).setVisible(AgentServices.getInstance().isSuperuser())
     // addTab(accountManager, "Account", null)

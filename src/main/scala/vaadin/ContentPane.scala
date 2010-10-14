@@ -113,14 +113,14 @@ class NewContentWindow(tree: ContentTree, parentItemId: AnyRef)
   val tagsLbl = new Label("Relationships")
   tagsLbl.setWidth("80px")
   
-  val tagContainer = ContentTagContainer.load.getOrElse(new ContentTagContainer(List()))
+  val tagContainer = ContentTagContainer.load(AgentServices.getInstance().getCurrentUserId().getOrElse("none")).getOrElse(new ContentTagContainer(List()))
   
   var tags = new ListSelect()
   tags.setWidth("180px")
   tags.setRows(3)
   tags.setMultiSelect(true)
   tags.setNullSelectionAllowed(true)
-  ContentTagDAO.getAll().map(ct => {
+  ContentTagDAO.getAllByUserId(AgentServices.getInstance().getCurrentUserId().getOrElse("none")).map(ct => {
     tags.addItem(ct.getName())
   })
   parent match {
@@ -206,7 +206,7 @@ class NewContentWindow(tree: ContentTree, parentItemId: AnyRef)
           new ItemTag(objId, t)
         }))
         
-        val newCTs = ContentTagDAO.getByNames(newTags)
+        val newCTs = ContentTagDAO.getByNamesByUserId(newTags, obj.getUserId())
         obj.setTags( newCTs )
         item.getItemProperty("tags").setValue(obj.getTags().toList)
         item.getItemProperty("tagLabel").setValue(new Label(obj.getTagsAsHTML(), Label.CONTENT_XHTML))
@@ -235,14 +235,14 @@ class EditContentWindow(tree: ContentTree, item: Item, itemId: AnyRef, obj: Cont
   val tagsLbl = new Label("Relationships")
   nameLbl.setWidth("80px")
   
-  val tagContainer = ContentTagContainer.load.getOrElse(new ContentTagContainer(List()))
+  val tagContainer = ContentTagContainer.load(AgentServices.getInstance().getCurrentUserId().getOrElse("none")).getOrElse(new ContentTagContainer(List()))
   
   var tags = new ListSelect()
   tags.setWidth("180px")
   tags.setRows(3)
   tags.setMultiSelect(true)
   tags.setNullSelectionAllowed(true)
-  ContentTagDAO.getAll().map(ct => {
+  ContentTagDAO.getAllByUserId(AgentServices.getInstance().getCurrentUserId().getOrElse("none")).map(ct => {
     tags.addItem(ct.getName())
   })
   item.getItemProperty("tags").getValue().asInstanceOf[List[ContentTag]].map(ct => {
@@ -297,7 +297,7 @@ class EditContentWindow(tree: ContentTree, item: Item, itemId: AnyRef, obj: Cont
             new ItemTag(id, t)
           }))
           
-          val newCTs = ContentTagDAO.getByNames(newTags)
+          val newCTs = ContentTagDAO.getByNamesByUserId(newTags, x.getUserId())
           x.setTags( newCTs )
           item.getItemProperty("tags").setValue(x.getTags().toList)
           item.getItemProperty("tagLabel").setValue(new Label(x.getTagsAsHTML(), Label.CONTENT_XHTML))

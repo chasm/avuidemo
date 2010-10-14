@@ -87,12 +87,12 @@ object InternetCnxnDAO {
   }
   
   def getAllWithContentTagsByUserId(userId: String): List[InternetCnxn] = {
-    val tags = ContentTagDAO.getAll().map(t => (t.getName(), t)).toMap
+    val tags = ContentTagDAO.getAllByUserId(userId).map(t => (t.getId(), t)).toMap
     val cnxns = InternetCnxnDAO.getAllByUserId(userId)
     cnxns.map(cnxn => {
       cnxn.tags = ListSet.empty
       CnxnTagDAO.getAllByCnxnId(cnxn.getId()).map(ct => {
-        cnxn.tags += tags(ct.getTagName())
+        cnxn.tags += tags(ct.getTagId())
       })
       cnxn
     })

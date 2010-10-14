@@ -5,6 +5,7 @@ import com.nonebetwixt.agent.ui.AgentServices
 import com.sleepycat.je.{DatabaseException, Environment, EnvironmentConfig}
 import com.sleepycat.persist.{EntityStore, StoreConfig}
 
+import java.util.UUID
 import java.io.File
 
 object DbSession {
@@ -14,6 +15,7 @@ object DbSession {
   var env: Environment = null
   var store: EntityStore = null
   var contentAccessor: ContentAccessor = null
+  val uuid: UUID = UUID.randomUUID
   
   try {
     envConfig.setAllowCreate(true)

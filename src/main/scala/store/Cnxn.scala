@@ -14,18 +14,17 @@ import java.net.URI
 
 trait CnxnLabel[Namespace,Tag]
 extends Tree[Tag] with SeqProxy[Either[Tag,CnxnLabel[Namespace,Tag]]] {
-  def up( tOrC : Either[Tag,CnxnLabel[Namespace,Tag]] )
-   : List[Tag] = {
+  def up( tOrC : Either[Tag,CnxnLabel[Namespace,Tag]] ): List[Tag] = {
     tOrC match {
       case Left( t ) => List( t )
       case Right( CnxnBranch( ns, lbls ) ) => {
-	( List[Tag]() /: lbls.flatMap( _.self ) )(
-	  {
-	    ( acc, e ) => {
-	      acc ++ up( e )
-	    }
-	  }
-	)
+      	( List[Tag]() /: lbls.flatMap( _.self ) )(
+      	  {
+      	    ( acc, e ) => {
+      	      acc ++ up( e )
+      	    }
+      	  }
+      	)
       }
     }
   }

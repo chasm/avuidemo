@@ -21,11 +21,7 @@
 
     <inherits name="com.nonebetwixt.agent.gwt.AgentWidgetSet" />
 
-    <inherits name="com.vaadin.addon.treetable.TreetableWidgetset" />
-
     <inherits name="org.vaadin.tinymceeditor.widgetset.TinymceeditorWidgetset" />
-    
-    <!-- <inherits name="com.vaadin.addon.colorpicker.gwt.ColorPickerWidgetSet" /> -->
 
-    <inherits name="org.vaadin.henrik.refresher.RefresherApplicationWidgetset" />
+    <inherits name="com.vaadin.addon.treetable.TreetableWidgetset" />
 </module>

@@ -1,5 +1,7 @@
 package com.nonebetwixt.agent.model
 
+import com.nonebetwixt.agent.ui.ContentRouter
+
 import scala.collection.JavaConversions._
 import scala.collection.immutable.{ListSet, TreeSet}
 
@@ -11,11 +13,43 @@ import com.sleepycat.persist.{EntityCursor, EntityJoin}
 
 import java.util.{Date, UUID}
 
+import com.biosimilarity.lift.model.zipper._
+import com.biosimilarity.lift.model.store._
+
+object ContentItem {
+  
+  def toPayload(contentItem: ContentItem): CnxnLabel[String,String] = {
+    new CnxnBranch[String,String](
+      "contentItem",
+      List(
+        new CnxnLeaf[String,String](
+          contentItem.getId()
+        ),
+        new CnxnLeaf[String,String](
+          contentItem.getUserId()
+        ),
+        new CnxnLeaf[String,String](
+          contentItem.getName()
+        ),
+        new CnxnLeaf[String,String](
+          contentItem.getValue()
+        ),
+        new CnxnLeaf[String,String](
+          contentItem.getPosition().toString
+        ),
+        new CnxnLeaf[String,String](
+          contentItem.getParentId()
+        )
+      )
+    )
+  }
+}
+
 @Entity
-class ContentItem(ui: String, pi: String, n: String, v: String, vt: String, u: String, p: Int) {
+case class ContentItem(ui: String, pi: String, n: String, v: String, vt: String, u: String, p: Int) {
   
   def this() = {
-    this("","","","","","",0)
+    this("","","","","","",-1)
   }
   
   @PrimaryKey
@@ -79,6 +113,7 @@ class ContentItem(ui: String, pi: String, n: String, v: String, vt: String, u: S
   def addTag(t: ContentTag) = { this.tags += t }
   def removeTag(t: ContentTag) = { this.tags -= t }
   def hasTags(): Boolean = this.tags.nonEmpty
+  def hasTag(t: ContentTag): Boolean = { this.tags.contains(t) }
   
   def getTagsAsHTML(): String = this.tags.toList.map(t => {
     "<span class=\"tag_" + t.getAbbr() + "\" title=\"" + t.getName() + "\">" + t.getAbbr() + "</span>"
@@ -88,17 +123,20 @@ class ContentItem(ui: String, pi: String, n: String, v: String, vt: String, u: S
 }
 
 object ContentItemDAO {
+  val cr: ContentRouter = new ContentRouter()
   
   def put(contentItem: ContentItem) = {
-    println("VALUE: " + contentItem.getValue())
     DbSession.contentAccessor.contentItemsById.put(contentItem)
+    contentItem.tags.toList.map(tag => {
+      cr.putContent(contentItem.getUserId(), tag, contentItem)
+    })
   }
   
   def put(contentItems: List[ContentItem]) {
     val ca = DbSession.contentAccessor
     
     contentItems.map(ci => {
-      ca.contentItemsById.put(ci)
+      put(ci)
     })
   }
   
@@ -123,12 +161,12 @@ object ContentItemDAO {
   }
   
   def getAllWithChildrenAndTagsByUserId(userId: String): List[ContentItem] = {
-    var tags = ContentTagDAO.getAll().map(ct => (ct.getName(), ct)).toMap
+    var tags = ContentTagDAO.getAllByUserId(userId).map(ct => (ct.getId(), ct)).toMap
     var items = getAllByUserId(userId).map(ci => (ci.getId(), ci)).toMap
     val its = ItemTagDAO.getAll()
     its.map(it => {
       if (items.contains(it.getItemId())) {
-        items(it.getItemId()).addTag(tags(it.getTagName()))
+        items(it.getItemId()).addTag(tags(it.getTagId()))
       }
     })
     
@@ -139,6 +177,28 @@ object ContentItemDAO {
     
     val list = items.map(ci => ci._2).toList.filter(ci => ci.parentId == null)
     list
+  }
+  
+  def getAllByUserIdAndTags(userId: String, tags: List[ContentTag]) = {
+    var items = getAllWithChildrenAndTagsByUserId(userId)
+    println("\nITEMS: " + items.mkString("; ") + "\n")
+    dropHiddenContent(items, tags)
+  }
+  
+  private def dropHiddenContent(items: List[ContentItem], tags: List[ContentTag]): List[ContentItem] = {
+    val f: List[ContentItem] =
+      items.filter(i => {
+        i.getTags().filter(t => {
+          tags.map(_.getName()).contains(t.getName())
+        }).size > 0
+      })
+    
+    f.map(i => {
+      if (i.hasChildren()) {
+        i.setChildren( dropHiddenContent(i.getChildren(), tags) )
+        i
+      } else i
+    })
   }
   
   def deleteById(id: String) {

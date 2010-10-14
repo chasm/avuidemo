@@ -14,6 +14,8 @@ trait CnxnQry
 
 case class CnxnReq(
   val tag: CnxnLabel[String,String],
+  val message: String,
+  val name: String,
   val src: URI,
   val timestamp: Date,
   val ttl: Long,
@@ -22,15 +24,15 @@ case class CnxnReq(
 
 case class CnxnResp(
   val tag: CnxnLabel[String,String],
+  val message: String,
+  val name: String,
   val src: URI,
   val timestamp: Date,
   val ttl: Long,
   val accepted: Boolean
 ) extends CnxnQry
 
-object CnxnStore extends TermStore[String,String,String,String] {
-  var Test: String = ""
-}
+object CnxnStore extends TermStore[String,String,String,CnxnQry]
 
 class AgentConnector {
   val TTL: Long = 7 * 24 * 60 * 60 * 1000  // Requests last a week
@@ -42,7 +44,13 @@ class AgentConnector {
    * @param targetId The target agent's uuid as a string
    * @param tag The relationship type requested
    */
-  def requestCnxn(source: String, target: String, tag: String) {
+  def requestCnxn(
+    source: String,
+    target: String,
+    tag: ContentTag,
+    message: String,
+    name: String
+  ) {
     
     println("")
     println("-----")
@@ -52,24 +60,10 @@ class AgentConnector {
     println("tag: " + tag)
     println("")
     
-    val cnxn: CnxnBranch[String,String] = new CnxnBranch[String,String](
-      "associations",
-      List(
-        new CnxnLeaf[String,String]( tag )
-      )
+    val label = new CnxnBranch[String,String](
+      "cnxnRequest",
+      List( new CnxnLeaf[String,String]("\"" + target + "\"") )
     )
-    
-    // val label = new CnxnBranch[String,String](
-    //   "cnxnRequest",
-    //   List(
-    //     new CnxnBranch[String,String](
-    //       "target",
-    //       List( new CnxnLeaf[String,String]("\"" + target + "\""))
-    //     )
-    //   )
-    // )
-    
-    val label = new CnxnLeaf[String,String]("\"" + target + "\"")
     
     val cnxnResponseLabel: CnxnLabel[String,String] = new CnxnBranch[String,String](
       "responses",
@@ -79,15 +73,15 @@ class AgentConnector {
       )
     )
     
-    // val payload = CnxnStore.Ground(CnxnReq(
-    //   cnxn,
-    //   new URI(source),
-    //   new Date(),
-    //   AgentConnector.TTL,
-    //   cnxnResponseLabel
-    // ))
-    
-    val payload = source
+    val payload = CnxnStore.Ground(CnxnReq(
+      ContentTag.toLabel(tag),
+      message,
+      name,
+      new URI(source),
+      new Date(),
+      TTL,
+      cnxnResponseLabel
+    ))
     
     println("label: " + label.toString)
     println("cnxnResponseLabel: " + cnxnResponseLabel.toString)
@@ -96,81 +90,27 @@ class AgentConnector {
     
     CnxnStore.put(label, payload)
     
-    // val qry = new CnxnCtxtBranch[String,String,String](
-    //   "responses",
-    //   List(
-    //     new CnxnCtxtLeaf[String,String,String]( Left( "\"" + source + "\"" ) ),
-    //     new CnxnCtxtLeaf[String,String,String]( Left( "\"" + target + "\"" ) )
-    //   )
-    // )
-    // 
-    // val handleCnxnResponse = (v: Option[CnxnStore.Resource]) => {
-    //   v match {
-    //     case Some(x) => println("\nFIRST LEVEL: " + x.toString + "\n")
-    //     case None => println("\nNOTHING\n")
-    //   }
-    //   v
-    // }
-    // 
-    // println("qry: " + qry.toString)
-    // println("handleCnxnResponse: " + handleCnxnResponse.toString)
-    // println("-----")
-    // println("")
-    // 
-    // CnxnStore.get(qry, handleCnxnResponse)
+    val handleCnxnResponse = (v: Option[CnxnStore.Resource]) => {
+      v match {
+        case Some(x) => println("\nFIRST LEVEL: " + x.toString + "\n")
+        case None => println("\nNOTHING\n")
+      }
+      v
+    }
+    
+    println("handleCnxnResponse: " + handleCnxnResponse.toString)
+    println("-----")
+    println("")
+    
+    CnxnStore.get(cnxnResponseLabel, handleCnxnResponse)
   }
-  
-  
-  // Some(
-  //   RBound(
-  //     Some(
-  //       Ground(
-  //         CnxnReq(
-  //           List(
-  //             Right(
-  //               List(
-  //                 Left(Close Friend)
-  //               )
-  //             )
-  //           ),
-  //           agent:82841319-c51d-4b35-abfb-0a5ce84680e0,
-  //           Wed Oct 13 01:37:03 GMT-03:00 2010,
-  //           604800000,
-  //           List(
-  //             Right(
-  //               List(
-  //                 Left(
-  //                   &quot;agent:82841319-c51d-4b35-abfb-0a5ce84680e0&quot;
-  //                 )
-  //               )
-  //             ), 
-  //             Right(
-  //               List(
-  //                 Left(
-  //                   &quot;agent:00000000-1111-2222-3333-444444444444&quot;
-  //                 )
-  //               )
-  //             )
-  //           )
-  //         )
-  //       )
-  //     ),
-  //     Some(org.prolog4j.tuprolog.TuPrologSolution@1240158)
-  //   )
-  // )
-  
-  
-  
-  
-  
-  
-  
+
   /**
    * Listen for connection requests
    *
    * @param sourceId The source agent's uuid as a string
    */
-  def listenForCnxnRequests(source: String) {
+  def listenForCnxnRequests( source: String ) {
     
     println("")
     println("  +++++")
@@ -178,24 +118,13 @@ class AgentConnector {
     println("  source: " + source)
     println("")
     
-    // val qry = new CnxnCtxtBranch[String,String,String](
-    //   "cnxnRequest",
-    //   List(
-    //     new CnxnCtxtBranch[String,String,String](
-    //       "target",
-    //       List(
-    //         new CnxnCtxtLeaf[String,String,String]( Left( "\"" + source + "\"" ) )
-    //       )
-    //     )
-    //   )
-    // )
-    
-    val qry = new CnxnLeaf[String,String]("\"" + source + "\"")
+    val qry = new CnxnBranch[String,String](
+      "cnxnRequest",
+      List( new CnxnLeaf[String,String]("\"" + source + "\"") )
+    )
     
     val handleCnxnResponse = (v: Option[CnxnStore.Resource]) => {
-      println("\n    I AM AGENT " + AgentServices.getInstance().getCurrentUserId().getOrElse("crapola"))
-      println("    GOT A RESPONSE! " + v.toString)
-      listenForCnxnRequests(source)
+      println(v.toString)
       v
     }
     
@@ -215,7 +144,13 @@ class AgentConnector {
    * @param cnxn The relationship type requested
    * @param accepted True if request accepted; false if not
    */
-  def respondToCnxnRequest(source: String, target: String, cnxn: CnxnLabel[String,String], accepted: Boolean) {
+  def respondToCnxnRequest(
+    source: String,
+    target: String,
+    cnxn: CnxnLabel[String,String],
+    message: String,
+    accepted: Boolean
+  ) {
     
     println("")
     println("*****")
@@ -234,15 +169,18 @@ class AgentConnector {
       )
     )
     
-    // val payload = CnxnStore.Ground(CnxnResp(
-    //   cnxn,
-    //   new URI(source),
-    //   new Date(),
-    //   AgentConnector.TTL,
-    //   accepted
-    // ))
-    
-    val payload = source
+    val payload = CnxnStore.Ground(CnxnResp(
+      cnxn,
+      message,
+      AgentServices.getInstance().getCurrentUser match {
+        case Some(u) => u.getName()
+        case None => throw new Exception("Must be logged in to request connections.")
+      },
+      new URI(source),
+      new Date(),
+      TTL,
+      accepted
+    ))
     
     println("label: " + label.toString)
     println("payload: " + payload.toString)

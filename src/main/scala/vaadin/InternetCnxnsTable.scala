@@ -56,7 +56,7 @@ class InternetCnxnsTable extends VerticalLayout {
     table.setContainerDataSource(c)
     table.addGeneratedColumn("tags", new TagColumnGenerator())
     table.setVisibleColumns(List("id", "site", "uri", "alias", "tags").toArray)
-    table.setColumnHeaders(List("ID", "Site", "URI", "Alias", "Associations").toArray)
+    table.setColumnHeaders(List("ID", "Site", "URI", "Alias", "Relationships").toArray)
     table.setColumnExpandRatio("alias", 1)
     table.setColumnCollapsed("id", true)
   })
@@ -94,14 +94,14 @@ class InternetCnxnsTable extends VerticalLayout {
     val tagsLbl = new Label("Relationships")
     nameLbl.setWidth("80px")
 
-    val tagContainer = ContentTagContainer.load.getOrElse(new ContentTagContainer(List()))
+    val tagContainer = ContentTagContainer.load(AgentServices.getInstance().getCurrentUserId().getOrElse("none")).getOrElse(new ContentTagContainer(List()))
 
     var tags = new ListSelect()
     tags.setWidth("180px")
     tags.setRows(3)
     tags.setMultiSelect(true)
     tags.setNullSelectionAllowed(true)
-    ContentTagDAO.getAll().map(ct => {
+    ContentTagDAO.getAllByUserId(AgentServices.getInstance().getCurrentUserId().getOrElse("none")).map(ct => {
       tags.addItem(ct.getName())
     })
     item.getItemProperty("tags").getValue().asInstanceOf[List[ContentTag]].map(ct => {
@@ -156,7 +156,7 @@ class InternetCnxnsTable extends VerticalLayout {
               new ItemTag(id, t)
             }))
 
-            val newCTs = ContentTagDAO.getByNames(newTags)
+            val newCTs = ContentTagDAO.getByNamesByUserId(newTags, x.getUserId())
             x.setTags( newCTs )
             item.getItemProperty("tags").setValue(x.getTags().toList)
             item.getItemProperty("tagLabel").setValue(new Label(x.getTagsAsHTML(), Label.CONTENT_XHTML))

@@ -23,6 +23,8 @@ import com.vaadin.service.ApplicationContext
 import com.nonebetwixt.agent.utilities._
 import com.nonebetwixt.agent.utilities.Dimension._
 
+import org.vaadin.henrik.refresher._
+
 import javax.mail.{Session => MailSession, Transport, Message, PasswordAuthentication, URLName}
 import javax.mail.internet._
 
@@ -42,17 +44,18 @@ class AgentServices extends Application with ApplicationContext.TransactionListe
   private var currentUserId: Option[String] = None
   private var currentUser: Option[ContentUser] = None
   private var currentExpiration: Option[Long] = None
+  setSuperuser()
+  
   
   override def init() {
     setTheme("agent")
     getContext().addTransactionListener(this)
     setSuperuser()
-    TestData.loadTestData(AgentServices.suId)
     var main = new AgentLoginWindow()
-    main.center()
+    // main.center()
     setMainWindow(main)
   }
-
+  
   def transactionStart(application: Application, o: Object) {
     if (application == AgentServices.this) {
       AgentServices.currentApplication.set(this)
@@ -67,8 +70,6 @@ class AgentServices extends Application with ApplicationContext.TransactionListe
   }
   
   def logIn(userId: String, pw: String) {
-    setSuperuser()
-    
     ContentUserDAO.get(userId) match {
       case Some(u) => u.authenticate(pw) match {
         case true =>
@@ -125,6 +126,8 @@ class AgentServices extends Application with ApplicationContext.TransactionListe
         su.setExpires(0L)
         ContentUserDAO.put(su)
         println("Setting Fred: " + ContentUserDAO.get(AgentServices.suId).isDefined.toString)
+        TestData.loadTestData(AgentServices.suId)
+        println("Putting test data.")
       case Some(u) =>
     }
   }

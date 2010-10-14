@@ -20,26 +20,32 @@ class ContentAccessor(store: EntityStore) {
     store.getSecondaryIndex(contentItemsById, classOf[String], "parentId")
   
   // Tags
-  val contentTagsByName: PrimaryIndex[String,ContentTag] =
+  val contentTagsById: PrimaryIndex[String,ContentTag] =
     store.getPrimaryIndex(classOf[String], classOf[ContentTag])
+  val contentTagsByUser: SecondaryIndex[String,String,ContentTag] =
+    store.getSecondaryIndex(contentTagsById, classOf[String], "userId")
+  val contentTagsByParent: SecondaryIndex[String,String,ContentTag] =
+    store.getSecondaryIndex(contentTagsById, classOf[String], "parentId")
+  val contentTagsByName: SecondaryIndex[String,String,ContentTag] =
+    store.getSecondaryIndex(contentTagsById, classOf[String], "name")
   val contentTagsByAbbr: SecondaryIndex[String,String,ContentTag] =
-    store.getSecondaryIndex(contentTagsByName, classOf[String], "abbr")
+    store.getSecondaryIndex(contentTagsById, classOf[String], "abbr")
   
   // Tags to Items
   val itemTagsById: PrimaryIndex[String,ItemTag] =
     store.getPrimaryIndex(classOf[String], classOf[ItemTag])
   val itemTagsByItemId: SecondaryIndex[String,String,ItemTag] =
     store.getSecondaryIndex(itemTagsById, classOf[String], "itemId")
-  val itemTagsByTagName: SecondaryIndex[String,String,ItemTag] =
-    store.getSecondaryIndex(itemTagsById, classOf[String], "tagName")
+  val itemTagsByTagId: SecondaryIndex[String,String,ItemTag] =
+    store.getSecondaryIndex(itemTagsById, classOf[String], "tagId")
   
   // Tags to InternetCnxns
   val cnxnTagsById: PrimaryIndex[String,CnxnTag] =
     store.getPrimaryIndex(classOf[String], classOf[CnxnTag])
   val cnxnTagsByCnxnId: SecondaryIndex[String,String,CnxnTag] =
     store.getSecondaryIndex(cnxnTagsById, classOf[String], "cnxnId")
-  val cnxnTagsByTagName: SecondaryIndex[String,String,CnxnTag] =
-    store.getSecondaryIndex(cnxnTagsById, classOf[String], "tagName")
+  val cnxnTagsByTagId: SecondaryIndex[String,String,CnxnTag] =
+    store.getSecondaryIndex(cnxnTagsById, classOf[String], "tagId")
     
   // Cops
   val copsById: PrimaryIndex[String,Cop] =
@@ -98,8 +104,8 @@ class ContentAccessor(store: EntityStore) {
     store.getSecondaryIndex(agentCnxnsById, classOf[String], "leftId")
   val agentCnxnsByRightId: SecondaryIndex[String,String,AgentCnxn] =
     store.getSecondaryIndex(agentCnxnsById, classOf[String], "rightId")
-  val agentCnxnsByTagName: SecondaryIndex[String,String,AgentCnxn] =
-    store.getSecondaryIndex(agentCnxnsById, classOf[String], "tagName")
+  val agentCnxnsByTagId: SecondaryIndex[String,String,AgentCnxn] =
+    store.getSecondaryIndex(agentCnxnsById, classOf[String], "tagId")
   
   // InternetCnxns
   val internetCnxnsById: PrimaryIndex[String,InternetCnxn] =

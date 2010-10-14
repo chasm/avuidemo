@@ -11,7 +11,7 @@ import com.sleepycat.persist.{EntityCursor, EntityJoin}
 import java.util.{Date, UUID}
 
 @Entity
-class CnxnTag(ii: String, tn: String) {
+class CnxnTag(ii: String, ti: String) {
   
   def this() = {
     this("","")
@@ -24,17 +24,17 @@ class CnxnTag(ii: String, tn: String) {
   var cnxnId: String = ii
 
   @SecondaryKey(relate=MANY_TO_ONE, relatedEntity=classOf[ContentTag], onRelatedEntityDelete=CASCADE)
-  var tagName: String = tn
+  var tagId: String = ti
   
   def getId(): String = this.id
 
   def getCnxnId(): String = this.cnxnId
   def setCnxnId(ii: String) = { this.cnxnId = ii}
 
-  def getTagName(): String = this.tagName
-  def setTagName(tn: String) = { this.tagName = tn}
+  def getTagId(): String = this.tagId
+  def setTagId(ti: String) = { this.tagId = ti}
   
-  override def toString(): String = this.cnxnId + " (" + this.tagName + ")"
+  override def toString(): String = this.cnxnId + " (" + this.tagId + ")"
 }
 
 object CnxnTagDAO {
@@ -57,7 +57,7 @@ object CnxnTagDAO {
     DbSession.contentAccessor.cnxnTagsByCnxnId.subIndex(cnxnId).entities().toList
   }
   
-  def getAllByTagName(tagName: String): List[CnxnTag] = {
-    DbSession.contentAccessor.cnxnTagsByTagName.subIndex(tagName).entities().toList
+  def getAllByTagId(tagId: String): List[CnxnTag] = {
+    DbSession.contentAccessor.cnxnTagsByTagId.subIndex(tagId).entities().toList
   }
 }

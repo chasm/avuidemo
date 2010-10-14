@@ -28,7 +28,7 @@ class ContentManager extends HorizontalLayout with Fragmented {
   setWidth("100%")
   
   val colCenter = new Panel()
-  setWidth("100%")
+  colCenter.setWidth("100%")
   colCenter.setHeight("480px")
   colCenter.addComponent(new ContentPane())
   colCenter.getContent().asInstanceOf[Layout].setMargin(false)
@@ -36,15 +36,28 @@ class ContentManager extends HorizontalLayout with Fragmented {
   addComponent(colCenter)
   
 }
- 
-class ContentTagContainer(val collection: java.util.Collection[ContentTag])
-  extends BeanItemContainer[ContentTag](collection)
+
+class ContentWindow(caption: String, agentId: String, tags: List[ContentTag]) extends Window() {
+  setWidth("702px")
+  center()
   
-object ContentTagContainer {
-	def load: Option[ContentTagContainer] = {
-	  ContentTagDAO.getAll() match {
-	    case Nil => None
-	    case cts => Some(new ContentTagContainer(cts))
-	  }
-	}	  
+  println("")
+  println("opening the damn content window")
+  println("caption: " + caption)
+  println("agentId: " + agentId)
+  println("tags: " + tags.mkString("; "))
+  println("")
+  
+  val items = ContentItemDAO.getAllByUserIdAndTags(agentId, tags)
+  val tree = new ContentTree(items)
+  
+  val treePanel = new Panel(caption)
+  treePanel.setSizeFull()
+  treePanel.getContent().setSizeFull()
+  treePanel.getContent().asInstanceOf[VerticalLayout].setMargin(false)
+  treePanel.addComponent(tree)
+  treePanel.setScrollable(true)
+  treePanel.addStyleName("borderless")
+  
+  addComponent(treePanel)
 }

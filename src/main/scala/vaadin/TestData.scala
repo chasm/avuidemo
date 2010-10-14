@@ -2,7 +2,7 @@ package com.nonebetwixt.agent.ui
 
 import com.nonebetwixt.agent.model._
 
-import scala.collection.immutable.ListSet
+import scala.collection.immutable.{ListSet,HashMap}
 
 import com.vaadin.ui._
 
@@ -35,68 +35,77 @@ object TestData {
       ContentUserDAO.put(users)
     
       // ContentTags
-      val pa_tag = new ContentTag("Public/Anyone", "PA")
-      val an_tag = new ContentTag("Anonymous", "An")
-      val aq_tag = new ContentTag("Acquaintance", "Aq")
-      val fr_tag = new ContentTag("Friend", "Fr")
-      val cf_tag = new ContentTag("Close Friend", "CF")
-      val bf_tag = new ContentTag("Best Friend", "BF")
-      val co_tag = new ContentTag("Contact", "Co")
-      val as_tag = new ContentTag("Associate", "As")
-      val tc_tag = new ContentTag("Trusted Colleague", "TC")
-      val mr_tag = new ContentTag("Mentor", "Mr")
-      val me_tag = new ContentTag("Mentee", "Me")
-      val ef_tag = new ContentTag("Extended Family", "EF")
-      val if_tag = new ContentTag("Immediate Family", "IF")
-      val cc_tag = new ContentTag("Chess Club", "CC")
-      val tags: List[ContentTag] = List(
-        pa_tag, an_tag, aq_tag, fr_tag, cf_tag, bf_tag, co_tag, as_tag, tc_tag, mr_tag, me_tag, ef_tag, if_tag, cc_tag
-      )
-      ContentTagDAO.put(tags)
+      var tagMap: HashMap[String,ContentTag] = HashMap.empty
+      (su :: users).map(u => {
+        tagMap += (u.getId() + "_pa") -> new ContentTag(u.getId(), null, "Public/Anyone", "PA", 0)
+        tagMap += (u.getId() + "_an") -> new ContentTag(u.getId(), null, "Anonymous", "An", 1)
+        tagMap += (u.getId() + "_aq") -> new ContentTag(u.getId(), null, "Acquaintance", "Aq", 2)
+        tagMap += (u.getId() + "_fr") -> new ContentTag(u.getId(), null, "Friend", "Fr", 3)
+        tagMap += (u.getId() + "_cf") -> new ContentTag(u.getId(), null, "Close Friend", "CF", 4)
+        tagMap += (u.getId() + "_bf") -> new ContentTag(u.getId(), null, "Best Friend", "BF", 5)
+        tagMap += (u.getId() + "_co") -> new ContentTag(u.getId(), null, "Contact", "Co", 6)
+        tagMap += (u.getId() + "_as") -> new ContentTag(u.getId(), null, "Associate", "As", 7)
+        tagMap += (u.getId() + "_tc") -> new ContentTag(u.getId(), null, "Trusted Colleague", "TC", 8)
+        tagMap += (u.getId() + "_mr") -> new ContentTag(u.getId(), null, "Mentor", "Mr", 9)
+        tagMap += (u.getId() + "_me") -> new ContentTag(u.getId(), null, "Mentee", "Me", 10)
+        tagMap += (u.getId() + "_ef") -> new ContentTag(u.getId(), null, "Extended Family", "EF", 11)
+        tagMap += (u.getId() + "_if") -> new ContentTag(u.getId(), null, "Immediate Family", "IF", 12)
+        tagMap += (u.getId() + "_cc") -> new ContentTag(u.getId(), null, "Chess Club", "CC", 13)
+      })
+        
+      ContentTagDAO.put(tagMap.toList.map(x => x._2))
     
       // InternetCnxns
-      val su_face = new InternetCnxn(su.getId(), "Facebook", "http://facebook.com/", "last_crusader", "secret")
-      val su_link = new InternetCnxn(su.getId(), "LinkedIn", "http://linkedin.com/", "losttemple", "secret")
       val su_none = new InternetCnxn(su.getId(), "EACoP", "http://nonebetwixt.com/", "treasure_hunter", "secret")
-      val u1_face = new InternetCnxn(u1.getId(), "Facebook", "http://facebook.com/", "honest_abe", "secret")
       val u1_none = new InternetCnxn(u1.getId(), "EACoP", "http://nonebetwixt.com/", "tallman", "secret")
-      val u2_face = new InternetCnxn(u2.getId(), "Facebook", "http://facebook.com/", "big_stick", "secret")
       val u2_none = new InternetCnxn(u2.getId(), "EACoP", "http://nonebetwixt.com/", "old_grizzly", "secret")
-      val u2_link = new InternetCnxn(u2.getId(), "LinkedIn", "http://linkedin.com/", "rough_rider", "secret")
-      val u3_face = new InternetCnxn(u3.getId(), "Facebook", "http://facebook.com/", "martini", "secret")
       val u3_none = new InternetCnxn(u3.getId(), "EACoP", "http://nonebetwixt.com/", "secret_chair", "secret")
-      val u4_face = new InternetCnxn(u4.getId(), "Facebook", "http://facebook.com/", "marilyns", "secret")
       val u4_none = new InternetCnxn(u4.getId(), "EACoP", "http://nonebetwixt.com/", "back_pain", "secret")
-      val u5_link = new InternetCnxn(u5.getId(), "LinkedIn", "http://linkedin.com/", "muslim_boy", "secret")
       val u5_none = new InternetCnxn(u5.getId(), "EACoP", "http://nonebetwixt.com/", "hope_for_change", "secret")
       val icnxns: List[InternetCnxn] = List(
-        su_face, su_link, su_none, u1_face, u1_none, u2_face, u2_link, u3_face, u3_none, u4_face, u4_none, u5_link, u5_none
+        su_none, u1_none, u2_none, u3_none, u4_none, u5_none
       )
       InternetCnxnDAO.put(icnxns)
     
       // CnxnTags
       CnxnTagDAO.put(icnxns.map(c => {
-        new CnxnTag(c.getId(), an_tag.getName())
+        new CnxnTag(c.getId(), tagMap(c.getUserId() + "_an").getId())
       }))
     
       // AgentCnxns
       val acnxns: List[AgentCnxn] = List(
-        new AgentCnxn(su.getId(), u1.getId(), fr_tag.getName()),
-        new AgentCnxn(su.getId(), u2.getId(), fr_tag.getName()),
-        new AgentCnxn(su.getId(), u3.getId(), cf_tag.getName()),
-        new AgentCnxn(su.getId(), u4.getId(), bf_tag.getName()),
-        new AgentCnxn(su.getId(), u5.getId(), fr_tag.getName()),
-        new AgentCnxn(su.getId(), u4.getId(), tc_tag.getName()),
-        new AgentCnxn(su.getId(), u5.getId(), as_tag.getName()),
-        new AgentCnxn(u1.getId(), u2.getId(), as_tag.getName()),
-        new AgentCnxn(u1.getId(), u3.getId(), as_tag.getName()),
-        new AgentCnxn(u1.getId(), u5.getId(), as_tag.getName()),
-        new AgentCnxn(u1.getId(), u5.getId(), cc_tag.getName()),
-        new AgentCnxn(u2.getId(), u3.getId(), ef_tag.getName()),
-        new AgentCnxn(u2.getId(), u5.getId(), as_tag.getName()),
-        new AgentCnxn(u3.getId(), u5.getId(), as_tag.getName()),
-        new AgentCnxn(u4.getId(), u5.getId(), mr_tag.getName()),
-        new AgentCnxn(u5.getId(), u4.getId(), me_tag.getName())
+        new AgentCnxn(su.getId(), u1.getId(), tagMap(su.getId() + "_fr").getId()),
+        new AgentCnxn(su.getId(), u2.getId(), tagMap(su.getId() + "_fr").getId()),
+        new AgentCnxn(su.getId(), u3.getId(), tagMap(su.getId() + "_cf").getId()),
+        new AgentCnxn(su.getId(), u4.getId(), tagMap(su.getId() + "_bf").getId()),
+        new AgentCnxn(su.getId(), u5.getId(), tagMap(su.getId() + "_fr").getId()),
+        new AgentCnxn(su.getId(), u4.getId(), tagMap(su.getId() + "_tc").getId()),
+        new AgentCnxn(su.getId(), u5.getId(), tagMap(su.getId() + "_as").getId()),
+        new AgentCnxn(u1.getId(), u2.getId(), tagMap(u1.getId() + "_as").getId()),
+        new AgentCnxn(u1.getId(), u3.getId(), tagMap(u1.getId() + "_as").getId()),
+        new AgentCnxn(u1.getId(), u5.getId(), tagMap(u1.getId() + "_as").getId()),
+        new AgentCnxn(u1.getId(), u5.getId(), tagMap(u1.getId() + "_cc").getId()),
+        new AgentCnxn(u2.getId(), u3.getId(), tagMap(u2.getId() + "_ef").getId()),
+        new AgentCnxn(u2.getId(), u5.getId(), tagMap(u2.getId() + "_as").getId()),
+        new AgentCnxn(u3.getId(), u5.getId(), tagMap(u3.getId() + "_as").getId()),
+        new AgentCnxn(u4.getId(), u5.getId(), tagMap(u4.getId() + "_mr").getId()),
+        new AgentCnxn(u5.getId(), u4.getId(), tagMap(u5.getId() + "_me").getId()),
+        new AgentCnxn(su.getId(), u1.getId(), tagMap(su.getId() + "_pa").getId()),
+        new AgentCnxn(su.getId(), u2.getId(), tagMap(su.getId() + "_pa").getId()),
+        new AgentCnxn(su.getId(), u3.getId(), tagMap(su.getId() + "_pa").getId()),
+        new AgentCnxn(su.getId(), u4.getId(), tagMap(su.getId() + "_pa").getId()),
+        new AgentCnxn(su.getId(), u5.getId(), tagMap(su.getId() + "_pa").getId()),
+        new AgentCnxn(su.getId(), u4.getId(), tagMap(su.getId() + "_pa").getId()),
+        new AgentCnxn(su.getId(), u5.getId(), tagMap(su.getId() + "_pa").getId()),
+        new AgentCnxn(u1.getId(), u2.getId(), tagMap(u1.getId() + "_pa").getId()),
+        new AgentCnxn(u1.getId(), u3.getId(), tagMap(u1.getId() + "_pa").getId()),
+        new AgentCnxn(u1.getId(), u5.getId(), tagMap(u1.getId() + "_pa").getId()),
+        new AgentCnxn(u1.getId(), u5.getId(), tagMap(u1.getId() + "_pa").getId()),
+        new AgentCnxn(u2.getId(), u3.getId(), tagMap(u2.getId() + "_pa").getId()),
+        new AgentCnxn(u2.getId(), u5.getId(), tagMap(u2.getId() + "_pa").getId()),
+        new AgentCnxn(u3.getId(), u5.getId(), tagMap(u3.getId() + "_pa").getId()),
+        new AgentCnxn(u4.getId(), u5.getId(), tagMap(u4.getId() + "_pa").getId()),
+        new AgentCnxn(u5.getId(), u4.getId(), tagMap(u5.getId() + "_pa").getId())
       )
       AgentCnxnDAO.put(acnxns)
     
@@ -110,78 +119,95 @@ object TestData {
       val m7 = new AgentMessage(su.getId(), u2.getId(), m6.getId(), "Hey, thanks, man.")
       val mssgs = List(m1, m2, m3, m4, m5, m6, m7)
       AgentMessageDAO.put(mssgs)
+      
+      // div.tag_PA span, span.tag_PA { color: #000000; background: #eeeeee; }
+      // div.tag_An span, span.tag_An { color: #ffffff; background: #333333; }
+      // div.tag_Aq span, span.tag_Aq { color: #000000; background: #f9a5a3; }
+      // div.tag_Fr span, span.tag_Fr { color: #000000; background: #ee6666; }
+      // div.tag_CF span, span.tag_CF { color: #ffffff; background: #db2b2d; }
+      // div.tag_BF span, span.tag_BF { color: #ffffff; background: #b60c0c; }
+      // div.tag_Co span, span.tag_Co { color: #000000; background: #c1d8e6; }
+      // div.tag_As span, span.tag_As { color: #000000; background: #6f9ebc; }
+      // div.tag_TC span, span.tag_TC { color: #ffffff; background: #1d5b80; }
+      // div.tag_Mr span, span.tag_Mr { color: #ffffff; background: #9f36b7; }
+      // div.tag_Me span, span.tag_Me { color: #ffffff; background: #da74f3; }
+      // div.tag_EF span, span.tag_EF { color: #000000; background: #8ed3a6; }
+      // div.tag_IF span, span.tag_IF { color: #ffffff; background: #0f8a39; }
+      // div.tag_CC span, span.tag_CC { color: #000000; background: #dee072; }
+      // div.tag_Pr span, span.tag_Pr { color: #ffffff; background: #990000; }
     
       // ContentItems
       (su :: users).map(u => {
         val pInfo = new ContentItem(u.getId(), null, "Personal Info", "", "Label", "", 0)
-        val pInfo_pa = new ItemTag(pInfo.getId(), pa_tag.getName())
+        val pInfo_pa = new ItemTag(pInfo.getId(), tagMap(pInfo.getUserId() + "_pa").getId())
+        println("pInfo: " + pInfo_pa.toString)
       
         val name = new ContentItem(u.getId(), pInfo.getId(), "Name", "", "Label", "", 0)
-        val name_pa = new ItemTag(name.getId(), pa_tag.getName())
+        val name_pa = new ItemTag(name.getId(), tagMap(name.getUserId() + "_pa").getId())
       
         val pts = new ContentItem(u.getId(), name.getId(), "Parts", "", "Label", "", 0)
-        val pts_pa = new ItemTag(pts.getId(), pa_tag.getName())
+        val pts_pa = new ItemTag(pts.getId(), tagMap(pts.getUserId() + "_pa").getId())
       
         val hon = new ContentItem(u.getId(), pts.getId(), "Honorific", "", "String", "", 0)
-        val hon_pa = new ItemTag(hon.getId(), pa_tag.getName())
+        val hon_pa = new ItemTag(hon.getId(), tagMap(hon.getUserId() + "_pa").getId())
       
         val given = new ContentItem(u.getId(), pts.getId(), "Given", "", "String", "", 1)
-        val given_co = new ItemTag(given.getId(), co_tag.getName())
-        val given_aq = new ItemTag(given.getId(), aq_tag.getName())
+        val given_co = new ItemTag(given.getId(), tagMap(given.getUserId() + "_co").getId())
+        val given_aq = new ItemTag(given.getId(), tagMap(given.getUserId() + "_aq").getId())
       
         val mid = new ContentItem(u.getId(), pts.getId(), "Middle", "", "String", "", 2)
-        val mid_tc = new ItemTag(mid.getId(), tc_tag.getName())
+        val mid_tc = new ItemTag(mid.getId(), tagMap(mid.getUserId() + "_tc").getId())
       
         val famn = new ContentItem(u.getId(), pts.getId(), "Surname", "", "String", "", 3)
-        val famn_co = new ItemTag(famn.getId(), co_tag.getName())
+        val famn_co = new ItemTag(famn.getId(), tagMap(famn.getUserId() + "_co").getId())
       
         val suf = new ContentItem(u.getId(), pts.getId(), "Suffix", "", "String", "", 4)
-        val suf_pa = new ItemTag(suf.getId(), pa_tag.getName())
+        val suf_pa = new ItemTag(suf.getId(), tagMap(suf.getUserId() + "_pa").getId())
       
         val leg = new ContentItem(u.getId(), name.getId(), "Legal Name", "", "String", "", 1)
-        val leg_pa = new ItemTag(leg.getId(), pa_tag.getName())
+        val leg_pa = new ItemTag(leg.getId(), tagMap(leg.getUserId() + "_pa").getId())
       
         val fn = new ContentItem(u.getId(), name.getId(), "Familiar Name", "", "String", "", 2)
-        val fn_as = new ItemTag(fn.getId(), as_tag.getName())
+        val fn_as = new ItemTag(fn.getId(), tagMap(fn.getUserId() + "_as").getId())
       
         val nn = new ContentItem(u.getId(), name.getId(), "Nickname", "", "String", "", 3)
-        val nn_tc = new ItemTag(nn.getId(), tc_tag.getName())
+        val nn_tc = new ItemTag(nn.getId(), tagMap(nn.getUserId() + "_tc").getId())
       
         val loc = new ContentItem(u.getId(), pInfo.getId(), "Location", "", "Label", "", 1)
-        val loc_pa = new ItemTag(loc.getId(), pa_tag.getName())
+        val loc_pa = new ItemTag(loc.getId(), tagMap(loc.getUserId() + "_pa").getId())
       
         val curmet = new ContentItem(u.getId(), loc.getId(), "Current Metro Area", "", "String", "", 0)
-        val curmet_co = new ItemTag(curmet.getId(), co_tag.getName())
+        val curmet_co = new ItemTag(curmet.getId(), tagMap(curmet.getUserId() + "_co").getId())
       
         val curloc = new ContentItem(u.getId(), loc.getId(), "Current Location", "", "String", "", 1)
-        val curloc_tc = new ItemTag(curloc.getId(), tc_tag.getName())
+        val curloc_tc = new ItemTag(curloc.getId(), tagMap(curloc.getUserId() + "_tc").getId())
       
         val curadd = new ContentItem(u.getId(), loc.getId(), "Current Address", "", "Label", "", 2)
-        val curadd_as = new ItemTag(curadd.getId(), as_tag.getName())
+        val curadd_as = new ItemTag(curadd.getId(), tagMap(curadd.getUserId() + "_as").getId())
       
         val strnum = new ContentItem(u.getId(), curadd.getId(), "Street Number", "", "String", "", 0)
-        val strnum_as = new ItemTag(strnum.getId(), as_tag.getName())
+        val strnum_as = new ItemTag(strnum.getId(), tagMap(strnum.getUserId() + "_as").getId())
       
         val strnam = new ContentItem(u.getId(), curadd.getId(), "Street Name", "", "String", "", 1)
-        val strnam_as = new ItemTag(strnam.getId(), as_tag.getName())
+        val strnam_as = new ItemTag(strnam.getId(), tagMap(strnam.getUserId() + "_as").getId())
       
         val strtyp = new ContentItem(u.getId(), curadd.getId(), "Street Type", "", "String", "", 2)
-        val strtyp_as = new ItemTag(strtyp.getId(), as_tag.getName())
+        val strtyp_as = new ItemTag(strtyp.getId(), tagMap(strtyp.getUserId() + "_as").getId())
       
         val cit = new ContentItem(u.getId(), curadd.getId(), "City", "", "String", "", 3)
-        val cit_as = new ItemTag(cit.getId(), as_tag.getName())
+        val cit_as = new ItemTag(cit.getId(), tagMap(cit.getUserId() + "_as").getId())
       
         val stat = new ContentItem(u.getId(), curadd.getId(), "State", "", "String", "", 4)
-        val stat_as = new ItemTag(stat.getId(), as_tag.getName())
+        val stat_as = new ItemTag(stat.getId(), tagMap(stat.getUserId() + "_as").getId())
       
         val zip = new ContentItem(u.getId(), curadd.getId(), "Zip Code", "", "String", "", 5)
-        val zip_as = new ItemTag(zip.getId(), as_tag.getName())
+        val zip_as = new ItemTag(zip.getId(), tagMap(zip.getUserId() + "_as").getId())
       
         val pl4 = new ContentItem(u.getId(), curadd.getId(), "Plus4", "", "String", "", 6)
-        val pl4_as = new ItemTag(pl4.getId(), as_tag.getName())
+        val pl4_as = new ItemTag(pl4.getId(), tagMap(pl4.getUserId() + "_as").getId())
       
         val cntry = new ContentItem(u.getId(), curadd.getId(), "Country", "US", "String", "", 7)
-        val cntry_pa = new ItemTag(cntry.getId(), pa_tag.getName())
+        val cntry_pa = new ItemTag(cntry.getId(), tagMap(cntry.getUserId() + "_pa").getId())
         
         val cItems = List(
           pInfo, name, pts, hon, given, mid, famn, suf, leg, fn, nn, loc,
@@ -200,18 +226,13 @@ object TestData {
       
       // Cops
       val cop = new Cop(su.getId(), "EACoP", "Early Adopters Community of Practice")
-      val cop_yes = new Cop(su.getId(), "Another CoP", "This CoP has no fora")
-      val cop_no = new Cop(su.getId(), "Inactive CoP", "This CoP is inactive")
-      cop_no.setIsActive(false)
-      CopDAO.put(List(cop, cop_yes, cop_no))
+      CopDAO.put(cop)
     
       // Fora
       val f1 = new Forum(cop.getId(), su.getId(), "NoneBetwixt Help", "How to do what you want to do", ListSet.empty)
       val f2 = new Forum(cop.getId(), su.getId(), "NoneBetwixt Feature Requests", "What can Agent Services do for you?", ListSet.empty)
       val f3 = new Forum(cop.getId(), su.getId(), "NoneBetwixt Bug Reports", "What went wrong", ListSet.empty)
-      val f_no = new Forum(cop.getId(), su.getId(), "Inactive Forum", "This Forum is inactive", ListSet.empty)
-      f_no.setIsActive(false)
-      val fora = List(f1, f2, f3, f_no)
+      val fora = List(f1, f2, f3)
       ForumDAO.put(fora)
     
       // Members
@@ -221,9 +242,7 @@ object TestData {
       val cm3 = new Member(cop.getId(), u3.getId(), "secret_chair")
       val cm4 = new Member(cop.getId(), u4.getId(), "back_pain")
       val cm5 = new Member(cop.getId(), u5.getId(), "hope_for_change")
-      val cm5_no = new Member(cop_no.getId(), u5.getId(), "inactive_member")
-      cm5_no.setIsActive(false)
-      val mbrs = List(msu, cm1, cm2, cm3, cm4, cm5, cm5_no)
+      val mbrs = List(msu, cm1, cm2, cm3, cm4, cm5)
       MemberDAO.put(mbrs)
     
       // Posts
@@ -240,9 +259,7 @@ object TestData {
       val f3t1 = new Post(cop.getId(), cm1.getId(), f3.getId(), null, getSubject(), getLorem())
       val f3t2 = new Post(cop.getId(), msu.getId(), f3.getId(), null, getSubject(), getLorem())
       val f3t3 = new Post(cop.getId(), cm5.getId(), f3.getId(), null, getSubject(), getLorem())
-      val f1t4_no = new Post(cop.getId(), cm5.getId(), f1.getId(), null, getSubject(), getLorem())
-      f1t4_no.setIsActive(false)
-      val posts = List(f1t1, f1t1r1, f1t1r2, f1r1r1, f1r1r2, f1t1r3, f1t2, f1t3, f2t1, f2t2, f3t1, f3t2, f3t3, f1t4_no)
+      val posts = List(f1t1, f1t1r1, f1t1r2, f1r1r1, f1r1r2, f1t1r3, f1t2, f1t3, f2t1, f2t2, f3t1, f3t2, f3t3)
       PostDAO.put(posts)
       
       notloaded = false
